@@ -1,13 +1,46 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f1b0f;
-  --foreground: #f0fdf4;
-  --primary: #22c55e;
-  --primary-dark: #16a34a;
-  --accent: #84cc16;
-  --muted: #365314;
-  --border: #22c55e;
+  /* Bagh Theme (inspired by souravbaghz.github.io) */
+  --background: #0a0b0f; /* deep charcoal / night */
+  --foreground: #e6e6ea; /* soft light grey */
+  --primary: #00ffd1;    /* neon cyan/teal */
+  --primary-dark: #00c6a2; /* deeper cyan */
+  --accent: #7c3aed;     /* secondary accent purple for small highlights */
+  --muted: #12131a;      /* panels */
+  --border: #2a2c36;     /* subtle border */
+}
+
+/* Explicit theme tokens on the html[data-theme] root for user customization */
+html[data-theme="peacock"] {
+  --background: #0b1513;
+  --foreground: #e9f7f1;
+  --primary: #0f766e;
+  --primary-dark: #115e59;
+  --accent: #064e3b;
+  --muted: #0e2723;
+  --border: #1f8a80;
+}
+
+html[data-theme="violet"] {
+  --background: #110b16; /* deep eggplant */
+  --foreground: #efe9f7; /* soft lavender white */
+  --primary: #6d28d9;    /* deep violet */
+  --primary-dark: #5b21b6; /* darker violet */
+  --accent: #3b0764;     /* plum accent */
+  --muted: #1a1024;      /* muted panels */
+  --border: #7c3aed;     /* violet border */
+}
+
+/* Bagh theme entry for explicit switching */
+html[data-theme="bagh"] {
+  --background: #0a0b0f;
+  --foreground: #e6e6ea;
+  --primary: #00ffd1;
+  --primary-dark: #00c6a2;
+  --accent: #7c3aed;
+  --muted: #12131a;
+  --border: #2a2c36;
 }
 
 @theme inline {
@@ -23,9 +56,9 @@
 }
 
 body {
-  background: linear-gradient(135deg, #0f1b0f 0%, #1a2e1a 50%, #0f1b0f 100%);
+  background: linear-gradient(135deg, color-mix(in oklab, var(--background) 92%, black) 0%, var(--background) 60%, color-mix(in oklab, var(--background), black 10%) 100%);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans, Arial), Helvetica, sans-serif;
   min-height: 100vh;
 }
 
@@ -35,21 +68,21 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a2e1a;
+  background: color-mix(in oklab, var(--background), black 10%);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #22c55e, #84cc16);
+  background: linear-gradient(180deg, var(--primary), var(--primary-dark));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #16a34a, #65a30d);
+  background: linear-gradient(180deg, var(--primary-dark), color-mix(in oklab, var(--primary-dark), black 10%));
 }
 
 /* Gradient text utility */
 .gradient-text {
-  background: linear-gradient(135deg, #22c55e, #84cc16, #a3e635);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -58,6 +91,6 @@ body {
 /* Gradient border utility */
 .gradient-border {
   border: 2px solid transparent;
-  background: linear-gradient(135deg, #0f1b0f, #1a2e1a) padding-box,
-              linear-gradient(135deg, #22c55e, #84cc16) border-box;
+  background: linear-gradient(135deg, color-mix(in oklab, var(--background), black 5%), color-mix(in oklab, var(--background), black 15%)) padding-box,
+              linear-gradient(135deg, var(--primary), var(--primary-dark)) border-box;
 }

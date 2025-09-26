@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import Navbar from "@/components/Navbar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -13,12 +15,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "John Developer - Full-Stack Developer Portfolio",
-  description: "Personal portfolio of John Developer, a passionate full-stack developer specializing in modern web technologies and creating exceptional digital experiences.",
-  keywords: ["portfolio", "developer", "full-stack", "web development", "React", "Next.js", "TypeScript"],
-  authors: [{ name: "John Developer" }],
+  title: "Fasil Valiyattil",
+  description: "Personal portfolio of Fasil Valiyattil, a passionate full-stack developer specializing in modern web technologies and creating exceptional digital experiences.",
+  keywords: ["portfolio", "developer", "full-stack", "web development", "Angular", "Node.js", "TypeScript"],
+  authors: [{ name: "Fasil Valiyattil" }],
   openGraph: {
-    title: "John Developer - Full-Stack Developer Portfolio",
+    title: "Fasil Valiyattil - Full-Stack Developer Portfolio",
     description: "Personal portfolio showcasing modern web development projects and skills",
     type: "website",
   },
@@ -31,10 +33,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider>
+          <Navbar />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

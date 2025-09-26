@@ -1,7 +1,6 @@
 export interface Skill {
   name: string;
   logo: string;
-  category: string;
 }
 
 export interface SkillCategory {
@@ -11,128 +10,59 @@ export interface SkillCategory {
 
 export const skillCategories: SkillCategory[] = [
   {
-    name: "Frontend Frameworks",
+    name: "Frontend",
     skills: [
-      {
-        name: "React",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-        category: "Frontend Frameworks"
-      },
-      {
-        name: "Next.js",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
-        category: "Frontend Frameworks"
-      },
-      {
-        name: "Vue.js",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg",
-        category: "Frontend Frameworks"
-      },
-      {
-        name: "Angular",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angular/angular-original.svg",
-        category: "Frontend Frameworks"
-      },
-      {
-        name: "Svelte",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg",
-        category: "Frontend Frameworks"
-      }
+      { name: "Angular", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angular/angular-original.svg" },
+      { name: "NgRx", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ngrx/ngrx-original.svg" },
+      { name: "RxJS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rxjs/rxjs-original.svg" },
+      { name: "Tailwind CSS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" },
+      { name: "PrimeNG", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/primeng/primeng-original.svg" },
+      // { name: "Angular Material", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularmaterial/angularmaterial-original.svg" },
+      { name: "React", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+      { name: "Next.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" }
     ]
   },
   {
-    name: "Backend Frameworks",
+    name: "Backend",
     skills: [
-      {
-        name: "Node.js",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-        category: "Backend Frameworks"
-      },
-      {
-        name: "Express",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
-        category: "Backend Frameworks"
-      },
-      {
-        name: "Django",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg",
-        category: "Backend Frameworks"
-      },
-      {
-        name: "FastAPI",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg",
-        category: "Backend Frameworks"
-      },
-      {
-        name: "Spring Boot",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg",
-        category: "Backend Frameworks"
-      }
+      { name: "Node.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+      { name: "Express", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" },
+      { name: "NestJS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg" },
+      // { name: "JWT", logo: "" },
+      { name: "Socket.IO", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/socketio/socketio-original.svg" },
+      { name: "WebRTC", logo: "" },
+      { name: "Puppeteer", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/puppeteer/puppeteer-original.svg" },
+      { name: "RabbitMQ", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rabbitmq/rabbitmq-original.svg" },
+      // { name: "Kafka", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apachekafka/apachekafka-original.svg" },
+      // { name: "gRPC", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grpc/grpc-original.svg" }
     ]
   },
   {
-    name: "Deployment Tools",
+    name: "Databases & ORM",
     skills: [
-      {
-        name: "Docker",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
-        category: "Deployment Tools"
-      },
-      {
-        name: "Kubernetes",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-original.svg",
-        category: "Deployment Tools"
-      },
-      {
-        name: "AWS",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg",
-        category: "Deployment Tools"
-      },
-      {
-        name: "Vercel",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vercel/vercel-original.svg",
-        category: "Deployment Tools"
-      },
-      {
-        name: "Netlify",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/netlify/netlify-original.svg",
-        category: "Deployment Tools"
-      }
+      { name: "MongoDB", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" },
+      { name: "PostgreSQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" },
+      { name: "MySQL", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+      { name: "Redis", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redis/redis-original.svg" },
+      { name: "TypeORM", logo: "" },
+      { name: "Prisma", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prisma/prisma-original.svg" }
     ]
   },
   {
-    name: "Others",
+    name: "DevOps & Tools",
     skills: [
-      {
-        name: "TypeScript",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-        category: "Others"
-      },
-      {
-        name: "Python",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
-        category: "Others"
-      },
-      {
-        name: "PostgreSQL",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
-        category: "Others"
-      },
-      {
-        name: "MongoDB",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
-        category: "Others"
-      },
-      {
-        name: "Git",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
-        category: "Others"
-      },
-      {
-        name: "Tailwind CSS",
-        logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
-        category: "Others"
-      }
+      { name: "Git", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" },
+      { name: "Docker", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" },
+      { name: "AWS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" },
+      // { name: "Lambda", logo: "" },
+      { name: "CI/CD", logo: "" },
+      { name: "GitHub Actions", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" },
+      { name: "Terraform", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" },
+      // { name: "Ansible", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ansible/ansible-original.svg" },
+      // { name: "Prometheus", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg" },
+      // { name: "Loki", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/loki/loki-original.svg" },
+      // { name: "Grafana", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg" },
+      // { name: "Kubernetes", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-original.svg" },
     ]
   }
 ];
