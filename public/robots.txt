@@ -7,7 +7,7 @@ User-agent: *
 Disallow: /404
 
 # Host
-Host: https://fasilv.in
+Host: https://www.fasilv.in
 
 # Sitemaps
-Sitemap: https://fasilv.in/sitemap.xml
+Sitemap: https://www.fasilv.in/sitemap.xml
