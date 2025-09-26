@@ -1,7 +1,19 @@
 import { projects } from '@/data/projects';
-import Link from 'next/link';
 import Button from '@/components/Button';
 import ProjectCard from '@/components/ProjectCard';
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Projects - Fasil Valiyattil",
+  description: "Explore the portfolio projects of Fasil Valiyattil...",
+  keywords: ["projects", "portfolio projects", "full-stack"],
+  openGraph: {
+    title: "Fasil Valiyattil Projects",
+    description: "A showcase of web development projects...",
+    url: "https://fasilv.in/projects",
+    type: "website",
+  },
+};
 
 export default function ProjectsPage() {
   return (

@@ -1,7 +1,6 @@
 import { projects } from '@/data/projects';
 import { skillCategories } from '@/data/skills';
 import { experiences } from '@/data/experience';
-// import Link from 'next/link';
 import Image from 'next/image';
 import ProjectCard from '@/components/ProjectCard';
 import Button from '@/components/Button';
@@ -62,7 +61,7 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-center mb-12">About Me</h2>
           <div className="rounded-2xl p-8">
           <p className="text-lg text-foreground/80 leading-relaxed">
-            I'm a MEAN stack developer with a strong focus on backend development and building reliable, 
+            I&apos;m a MEAN stack developer with a strong focus on backend development and building reliable, 
             scalable systems. I enjoy working on the logic and structure that power applications, 
             ensuring performance and maintainability behind the scenes.
           </p>
@@ -87,13 +86,15 @@ export default function Home() {
                 <div className="space-y-3">
                   {category.skills.map((skill) => (
                     <div key={skill.name} className="flex items-center space-x-3">
-                      <Image
-                        src={skill.logo}
-                        alt={skill.name}
-                        width={24}
-                        height={24}
-                        className="w-6 h-6"
-                      />
+                      {skill.logo && (
+                        <Image
+                          src={skill.logo}
+                          alt={skill.name}
+                          width={24}
+                          height={24}
+                          className="w-6 h-6"
+                        />
+                      )}
                       <span className="text-foreground/80">{skill.name}</span>
                     </div>
                   ))}
@@ -126,7 +127,7 @@ export default function Home() {
           <div className="relative">
             <div className="absolute left-4 top-0 bottom-0 w-px bg-[var(--border)]/60" aria-hidden />
             <div className="space-y-10">
-              {experiences.map((exp, idx) => (
+              {experiences.map((exp) => (
                 <div key={exp.id} className="relative pl-14">
                   <div className="absolute left-4 top-2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-[var(--primary)] shadow-[0_0_0_4px] shadow-[color-mix(in_oklab,var(--background),white_4%)] border border-[var(--border)]" aria-hidden />
                   <div className="rounded-2xl border border-[var(--border)]/50 bg-[color-mix(in_oklab,var(--background),white_3%)] p-6">

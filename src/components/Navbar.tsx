@@ -102,7 +102,7 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
-          <button
+          {/* <button
             aria-label="Toggle theme"
             title="Toggle theme"
             onClick={toggleTheme}
@@ -112,7 +112,7 @@ export default function Navbar() {
               <path d="M12 3v2m0 14v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M3 12h2m14 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
               <circle cx="12" cy="12" r="4" />
             </svg>
-          </button>
+          </button> */}
         </div>
         {isHome && (
           <button
@@ -139,7 +139,7 @@ export default function Navbar() {
                 {l.label}
               </a>
             ))}
-            <button
+            {/* <button
               onClick={() => { toggleTheme(); setMenuOpen(false); }}
               className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-[var(--border)] px-3 py-2"
             >
@@ -148,7 +148,7 @@ export default function Navbar() {
                 <path d="M12 3v2m0 14v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M3 12h2m14 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
                 <circle cx="12" cy="12" r="4" />
               </svg>
-            </button>
+            </button> */}
           </div>
         </div>
       )}

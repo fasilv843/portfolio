@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { Project } from "@/data/projects";
 import Button from "./Button";

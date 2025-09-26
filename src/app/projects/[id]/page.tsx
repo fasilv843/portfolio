@@ -3,15 +3,11 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import Button from '@/components/Button';
+import { Metadata } from 'next';
 
-interface ProjectPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function ProjectPage({ params }: ProjectPageProps) {
-  const project = projects.find(p => p.id === params.id);
+export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const project = projects.find(p => p.id === id);
 
   if (!project) {
     notFound();
@@ -30,6 +26,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 <div className="inline-block w-full max-w-3xl bg-[rgba(0,0,0,0.38)] rounded-xl p-4 md:p-6">
                   <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold">{project.name}</h1>
                   <p className="mt-2 text-base md:text-xl lg:text-2xl text-foreground/90">{project.subheading}</p>
+  
                   <div className="mt-4 md:mt-6 flex flex-wrap gap-3">
                     {project.liveLink && (
                       <Button
@@ -178,9 +175,41 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   );
 }
 
-// Generate static params for all projects
-export async function generateStaticParams() {
-  return projects.map((project) => ({
-    id: project.id,
-  }));
+// Dynamic metadata
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const project = projects.find(p => p.id === id);
+
+  if (!project) {
+    return {
+      title: 'Project Not Found',
+      description: 'This project does not exist',
+    };
+  }
+
+  return {
+    title: `${project.name} - Fasil Valiyattil`,
+    description: project.description,
+    openGraph: {
+      title: project.name,
+      description: project.description,
+      url: `https://fasilv.in/projects/${project.id}`,
+      images: [
+        {
+          url: project.image || 'https://via.placeholder.com/1200x630.png?text=Fasil+Valiyattil+Portfolio',
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@fasilv843',
+      creator: '@fasilv843',
+    },
+  };
 }
+
+// export async function generateStaticParams() {
+//   return projects.map((project) => ({ id: project.id }));
+// }

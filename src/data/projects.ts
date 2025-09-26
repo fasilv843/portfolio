@@ -39,7 +39,7 @@ export const projects: Project[] = [
     // demoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     liveLink: "https://cinesnap.fasilv.in",
     sourceCode: 'https://github.com/fasilv843/CineSnap-BackEnd',
-    image: 'https://media.istockphoto.com/id/1163541604/photo/close-up-back-rear-behind-photo-handsome-he-him-his-guy-typing-writing-keyboard-development.jpg?s=1024x1024&w=is&k=20&c=8BmEEIsNoF87omt613I3OJjk9U_armpjn8s4KYSIe_E='
+    // image: 'https://media.istockphoto.com/id/1163541604/photo/close-up-back-rear-behind-photo-handsome-he-him-his-guy-typing-writing-keyboard-development.jpg?s=1024x1024&w=is&k=20&c=8BmEEIsNoF87omt613I3OJjk9U_armpjn8s4KYSIe_E='
   },
   {
     id: 'gentsgarage',
@@ -59,7 +59,7 @@ export const projects: Project[] = [
     // demoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     liveLink: "https://gentsgarage.fasilv.in",
     sourceCode: 'https://github.com/fasilv843/Gents-Garage',
-    image: 'https://media.istockphoto.com/id/1163541604/photo/close-up-back-rear-behind-photo-handsome-he-him-his-guy-typing-writing-keyboard-development.jpg?s=1024x1024&w=is&k=20&c=8BmEEIsNoF87omt613I3OJjk9U_armpjn8s4KYSIe_E='
+    // image: 'https://media.istockphoto.com/id/1163541604/photo/close-up-back-rear-behind-photo-handsome-he-him-his-guy-typing-writing-keyboard-development.jpg?s=1024x1024&w=is&k=20&c=8BmEEIsNoF87omt613I3OJjk9U_armpjn8s4KYSIe_E='
   },
   {
     id: 'passerby',
@@ -77,7 +77,7 @@ export const projects: Project[] = [
     // demoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     liveLink: "https://passerby.fasilv.in",
     sourceCode: 'https://github.com/fasilv843/passerby',
-    image: 'https://media.istockphoto.com/id/1163541604/photo/close-up-back-rear-behind-photo-handsome-he-him-his-guy-typing-writing-keyboard-development.jpg?s=1024x1024&w=is&k=20&c=8BmEEIsNoF87omt613I3OJjk9U_armpjn8s4KYSIe_E='
+    // image: 'https://media.istockphoto.com/id/1163541604/photo/close-up-back-rear-behind-photo-handsome-he-him-his-guy-typing-writing-keyboard-development.jpg?s=1024x1024&w=is&k=20&c=8BmEEIsNoF87omt613I3OJjk9U_armpjn8s4KYSIe_E='
   },
   {
     id: 'trace53',

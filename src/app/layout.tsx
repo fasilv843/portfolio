@@ -20,10 +20,17 @@ export const metadata: Metadata = {
   keywords: ["portfolio", "developer", "full-stack", "web development", "Angular", "Node.js", "TypeScript"],
   authors: [{ name: "Fasil Valiyattil" }],
   openGraph: {
-    title: "Fasil Valiyattil - Full-Stack Developer Portfolio",
+    title: "Fasil Valiyattil Portfolio",
     description: "Personal portfolio showcasing modern web development projects and skills",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fasil Valiyattil Portfolio",
+    description: "Showcasing web development projects, skills, and experience.",
+    site: "@fasilv843",
+    images: ["https://via.placeholder.com/1200x630.png?text=Fasil+Valiyattil+Portfolio"]
+  }
 };
 
 export default function RootLayout({
