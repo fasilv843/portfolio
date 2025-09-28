@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 :root {
-  /* Bagh Theme (inspired by souravbaghz.github.io) */
   --background: #0a0b0f; /* deep charcoal / night */
   --foreground: #e6e6ea; /* soft light grey */
   --primary: #00ffd1;    /* neon cyan/teal */
@@ -32,8 +31,8 @@ html[data-theme="violet"] {
   --border: #7c3aed;     /* violet border */
 }
 
-/* Bagh theme entry for explicit switching */
-html[data-theme="bagh"] {
+
+html[data-theme="cyan"] {
   --background: #0a0b0f;
   --foreground: #e6e6ea;
   --primary: #00ffd1;

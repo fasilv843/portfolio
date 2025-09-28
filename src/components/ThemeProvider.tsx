@@ -2,7 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-type ThemeName = "peacock" | "violet" | "bagh";
+type ThemeName = "peacock" | "violet" | "cyan";
 
 type ThemeContextValue = {
   currentTheme: ThemeName;
@@ -19,9 +19,9 @@ export function useTheme() {
 }
 
 function getInitialTheme(): ThemeName {
-  if (typeof window === "undefined") return "bagh";
+  if (typeof window === "undefined") return "cyan";
   const stored = window.localStorage.getItem("theme") as ThemeName | null;
-  return stored === "peacock" || stored === "violet" || stored === "bagh" ? stored : "bagh";
+  return stored === "peacock" || stored === "violet" || stored === "cyan" ? stored : "cyan";
 }
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }>= ({ children }) => {
@@ -35,7 +35,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }>= ({ children
 
   const setTheme = useCallback((theme: ThemeName) => setCurrentTheme(theme), []);
   const toggleTheme = useCallback(() => {
-    setCurrentTheme((prev) => (prev === "bagh" ? "peacock" : prev === "peacock" ? "violet" : "bagh"));
+    setCurrentTheme((prev) => (prev === "cyan" ? "peacock" : prev === "peacock" ? "violet" : "cyan"));
   }, []);
 
   const value = useMemo(
