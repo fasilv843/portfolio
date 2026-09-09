@@ -260,84 +260,133 @@ metadata at request time. The **prerendered artifacts are correct** — `.next/s
 and each project page carry `https://www.fasilv.in/...`, with and without Vercel env vars set — and
 those are what a deploy serves. Still worth spot-checking a live social card after deploying.
 
-## Phase 5 — UI rewrite
+## Phase 5 — UI rewrite ✅ done
 
-Do this **after** phases 2–4, so you are restyling correct markup.
+Landed as a single commit. The direction and the three open design questions were settled with
+the site owner before any CSS was written; those decisions are recorded in 5.1 and are not to be
+re-litigated.
 
-- [ ] **5.1 Pick a direction before writing CSS.** The current look is generic dark-mode-neon:
-      rounded cards, gradient borders, a `👨‍💻` emoji where a photo should be. Choose a point of
-      view (editorial/typographic, brutalist-technical, warm-minimal, terminal…) and commit.
-      Write it down as 5 rules you can check work against.
-- [ ] **5.2 Typography scale.** One font (Inter) at seven sizes is doing everything right now.
-      Consider a display face for headings, a fluid `clamp()` scale, tightened tracking on large
-      sizes, and `text-wrap: balance` on headings / `pretty` on paragraphs.
-- [ ] **5.3 Spacing + layout rhythm.** Every section is `py-20 px-4` with a different `max-w-*`
-      (`7xl`, `4xl`, `6xl`, `3xl`). Extract a single `<Section>` component with consistent padding
-      and width so the page stops breathing unevenly.
-- [ ] **5.4 Hero.** Replace the emoji circle with a real photo or a deliberate graphic element.
-      Add a one-line value proposition, a resume download, and an email link alongside the two
-      social buttons.
-- [ ] **5.5 Component extraction.** `page.tsx` is a 276-line monolith. Split into
-      `components/sections/{Hero,About,Skills,Projects,Experience,Contact}.tsx`, plus shared
-      `Section`, `Tag`/`Badge`, `Card`, `SectionHeading`. The `<span className="px-2 py-1 bg-…
-  text-xs rounded border">` tag markup is currently duplicated in four places.
-- [ ] **5.6 Skills section.** Four static columns of icon+label. Options: group by proficiency,
-      add a "currently learning" band, make icons monochrome/`currentColor` so they don't fight the
-      palette (24 full-colour logos is visually noisy).
-- [ ] **5.7 Project cards.** `line-clamp-3` on the description with no `@tailwindcss/typography`
-      configured — verify it renders. Add real screenshots (2.6), hover treatment, and surface
-      live/source links on the card itself, not just the detail page.
-- [ ] **5.8 Experience timeline.** Reasonable structurally; restyle the pill badges and the
-      dot/rail, which currently use `shadow-[0_0_0_4px]` + `color-mix` hacks that will break in
-      light mode.
-- [ ] **5.9 Project detail page.** Text-heavy `feature` lists (CineSnap has 14 bullets). Group into
-      subsections, and the duplicated live/source buttons (hero + sidebar) should collapse into one
-      sticky sidebar.
-- [ ] **5.10 Contact.** Currently a single mailto button; the real form is commented out. Either
-      restore it wired to a service (Resend / Formspree / a route handler) or delete the dead block
-      and make the mailto CTA stronger.
-- [ ] **5.11 Footer.** One line of copyright, hardcoded `© 2026`. Add social links, use a dynamic
-      year, add a "built with" line with a repo link.
-- [ ] **5.12 New sections worth adding**: testimonials/recommendations, a writing/blog index,
-      GitHub activity, an availability status badge.
-- [ ] **5.13 Add `loading.tsx` and `error.tsx`** for the route segments.
+- [x] **5.1 Direction chosen: editorial / typographic.** Five rules, which every later change was
+      checked against:
 
-## Phase 6 — Animation
+      1. **Type carries hierarchy, not boxes.**
+      2. **Rules over borders** — hairlines and whitespace, no decorated edges.
+      3. **One accent, used sparingly** — links, section index, focus rings. No gradients.
+      4. **A numbered spine** — a mono index per section. Uses `font-mono`, which falls back to
+         the system stack, so this costs no font download (see 2.2).
+      5. **One measure** — one container width everywhere; prose narrows with `max-w-[68ch]`
+         *inside* it, never by changing the container.
 
-Nothing is animated today beyond `transition-all duration-300` on hover, and the two
-Tailwind keyframes that were never active (see 2.3).
+      Also decided: **Instrument Serif** as a display face for headings only; the hero photo at an
+      editorial **4:5 crop**; skill logos **kept but desaturated at rest**; contact is a **mailto
+      CTA, no form**; and **no new sections** beyond 5.13.
+- [x] **5.2 Typography.** Instrument Serif added via `next/font/google` (single weight, latin
+      subset, `display: swap`) with its variable on **`<html>`** alongside Inter's — the placement
+      2.2 fixed, since `@theme` reads them at `:root`. Fluid `--text-display` / `--text-title` /
+      `--text-lead` in the non-inline `@theme` block, each with its own line-height and tracking.
+      `text-balance` / `text-pretty` are Tailwind built-ins, so 5.2's wrapping ask needed no CSS.
+- [x] **5.3 One measure, enforced by `components/ui/Section.tsx`.** The container width is decided
+      in exactly one place. `body`'s 135° gradient is now flat (rule 2), and `.gradient-text` /
+      `.gradient-border` are deleted — verified absent from the emitted CSS.
+- [x] **5.4 Hero rebuilt.** Real portrait at `aspect-[4/5]`, `object-top`, via `next/image` with
+      `priority` (a JPEG, so the 2.1 SVG restriction does not apply). Value proposition now names
+      the fintech work, which 7.6 notes was buried. **No resume CTA** — `public/resume.pdf` does
+      not exist and a 404 button is worse than none. Still 7.7.
+- [x] **5.5 `page.tsx` 272 → 20 lines.** Six section components under `components/sections/`, plus
+      `Footer`, behind three primitives in `components/ui/`: `Section`, `Card`, `Tag`. The chip
+      markup was written out **five** times, not four. `SectionHeading` was folded into `Section`
+      rather than made its own component — it has no independent use.
+- [x] **5.6 Skills.** Logos kept, `grayscale opacity-60` at rest and full colour on hover; still a
+      plain `<img>` per 2.1. Added a **monogram fallback** for the four skills with `logo: ""`,
+      which **closes 7.2** as a side effect.
+- [x] **5.7 Project cards.** `line-clamp-3` **verified rendering** in the built CSS (v4 ships
+      line-clamp in core). Live/source links surfaced on the card; the title is a stretched link
+      so the whole card is clickable but keyboard users get one tab stop, not three. Grid is 2-up
+      at the shared width and featured count went 3 → **4** so the grid is even.
+- [x] **5.8 Experience — the original premise here was stale.** Phase 3 had already removed the
+      `color-mix` hacks; `shadow-[0_0_0_4px]` was token-driven and worked in light mode. The real
+      problem was depth: a card inside a card inside a rail is three borders deep. Now hairline
+      rows, with duration/location as a mono eyebrow.
+- [x] **5.9 Project detail.** One **sticky** sidebar replaces two copies of the same buttons.
+      Features render in two columns — genuine semantic grouping needs the data to carry
+      categories, which is a phase 7 change, not a layout fix.
+- [x] **5.10 Contact** is the address itself at display scale plus copy-to-clipboard
+      (`CopyEmail.tsx`, with an `aria-live` confirmation). This also lands the copy-email half of
+      **6.8**.
+- [x] **5.11 Footer** has a dynamic year, "built with" + repo link, and social links from a new
+      `SOCIALS` array in `lib/site.ts`. `SOCIAL_LINKS` is now **derived** from it, so the JSON-LD
+      `sameAs` array cannot drift from what is on screen.
+- [ ] **5.12 Not done, deliberately.** Scope held to a rewrite rather than an expansion.
+- [x] **5.13** `app/loading.tsx`, `app/error.tsx` (client, per React's requirement, and it logs
+      `error.digest` so a user-visible failure ties back to a server log).
+- [x] **5.14 (new) Two accidental client components removed.** `Button` carried `"use client"`
+      only for an optional `onClick`, and `ProjectCard` was client **purely because it imported
+      `Button`** — which dragged the entire project grid into the client bundle on `/`,
+      `/projects` and all five detail pages. Neither needs it. `Button` also learned to route
+      external / `mailto:` / hash hrefs through a plain `<a>`; that gap is what had forced **six**
+      hand-written anchors it was supposed to replace.
+- [x] **5.15 (new) `/projects` was skipping a heading level.** Cards hardcoded `h3` while sitting
+      directly under the page `h1` with no `h2` between. `ProjectCard` now takes `headingLevel`.
+      Caught by walking the served HTML, not by lint — worth repeating on any new page.
 
-- [ ] **6.1 Establish motion tokens** — durations (fast 150 / base 250 / slow 400) and easings
-      (a standard ease-out plus one spring) as CSS variables. Consistency matters more than
-      cleverness.
-- [ ] **6.2 `prefers-reduced-motion` is not handled anywhere.** Add a global
-      `@media (prefers-reduced-motion: reduce)` block that neutralises transforms and durations,
-      and gate JS-driven animation on `matchMedia` too. Do this **before** adding animations.
-- [ ] **6.3 Scroll-reveal** for sections/cards — staggered fade+rise. Prefer CSS
-      `animation-timeline: view()` where supported with an `IntersectionObserver` fallback, or use
-      `motion`'s `whileInView`. Keep it subtle; every section sliding in is worse than none.
-- [ ] **6.4 Hero entrance** — a single considered sequence on first paint, not a generic fade.
-- [ ] **6.5 Nav polish.** The active-link underline already animates; the scrollspy runs a
-      `rAF`-throttled scroll listener over `getBoundingClientRect` for six sections
-      (`Navbar.tsx:34-76`). Replace with a single `IntersectionObserver` — less code, no scroll
-      handler. Animate the mobile menu open/close (it currently pops in).
-- [ ] **6.6 Card hover.** Currently `hover:scale-105` on the image and `scale-[1.02]` on buttons.
-      Unify: lift + border-glow + image zoom on one timing curve.
-- [ ] **6.7 View Transitions** between the projects list and a project detail page (Next 16 has
-      first-class support) — high payoff for a portfolio.
-- [ ] **6.8 Micro-interactions**: theme-toggle morph, copy-email confirmation, focus-visible rings
-      that are actually designed, a scroll progress indicator.
-- [ ] **6.9 Performance guard.** Animate only `transform` / `opacity`; avoid `transition-all`
-      (currently used on nearly every interactive element — it animates layout properties too).
+## Phase 6 — Animation ✅ done (6.7 deferred)
+
+Landed as one commit after phase 5. No JS animation runtime entered the tree: every effect is a
+Tailwind utility or a CSS keyframe, and both scroll-driven effects use scroll timelines rather
+than an observer.
+
+- [x] **6.1 Easings as tokens**, `--ease-out-quart` and `--ease-spring`, in the non-inline
+      `@theme` block — v4 has an `--ease-*` namespace, so they generate `ease-*` utilities
+      directly. **There is no `--duration-*` namespace**; do not invent one. Durations
+      standardise on the built-in `duration-150` / `200` / `400` as a convention.
+- [x] **6.2 Reduced motion — landed in the same commit as the first animation, not after.**
+      The blanket `*` rule **on its own is a trap**: anything that starts at `opacity: 0` and
+      relies on an animation to become visible stays *permanently invisible* once that animation
+      is neutralised. So `[data-reveal]`, `[data-reveal-group] > *` and `[data-animate]` are also
+      explicitly reset to their final state inside the same query. Verified in the emitted CSS.
+- [x] **6.3 Scroll reveal is `animation-timeline: view()` behind `@supports`** — and **no
+      `IntersectionObserver` fallback**, deliberately. `@supports` is what makes this safe:
+      unsupported browsers render the content statically, so there is no flash of hidden content
+      and no client component. A JS fallback would reintroduce both for a decorative effect.
+
+      One structural note: sections apply `data-reveal` to **their own** content rather than
+      inheriting it from `Section`, so a reveal *group* never nests inside a revealing wrapper
+      and compounds the fade.
+- [x] **6.4 Hero entrance** — staggered `[animation-delay:*]` across role → name → photo → lead →
+      CTAs, `backwards` fill so nothing flashes in before its turn.
+- [x] **6.5 Navbar.** Scrollspy is now **one `IntersectionObserver`** with a `rootMargin` band,
+      replacing the rAF scroll listener. `heroInView` state is gone entirely — brand visibility
+      derives from `activeId` during render, which is also what keeps
+      `eslint-plugin-react-hooks@7` happy (see 1.3). Mobile menu animates via
+      `grid-template-rows: 0fr → 1fr`, which reaches the content's natural height without a magic
+      `max-height`, and carries **`inert`** while collapsed so its links stay out of the tab order.
+- [x] **6.6 Card hover unified** — lift + border-strong + image zoom on one curve. The mismatched
+      `hover:scale-105` / `scale-[1.02]` pair is gone.
+- [ ] **6.7 View Transitions — deliberately deferred.** It needs `experimental.viewTransition` in
+      `next.config.ts`, and it is the one item that can be added or dropped without unpicking
+      anything else. Worth doing once real project screenshots land (7.4) — the shared element is
+      much more convincing with an image than with a letter placeholder.
+- [x] **6.8 Micro-interactions.** Scroll-progress rule on the nav edge via
+      `animation-timeline: scroll()` (pure CSS). Copy-email confirmation shipped in 5.10. Focus
+      rings were already designed in 3.10.
+
+      **The theme-toggle "morph" was not built, on purpose.** `ThemeProvider` runs with
+      `disableTransitionOnChange`, which suppresses every transition for the frame in which the
+      theme flips — so an animated cross-fade on the swap would be classes that can never fire.
+      The icon rotates on **hover** instead, which is unaffected.
+- [x] **6.9 `transition-all` eliminated.** Worth knowing: the emitted CSS **still carried a
+      `.transition-all` rule after the code was clean** — Tailwind v4 scans comments, and the
+      comments *explaining* the change were generating it. Exactly the 2.8 trap, but inside
+      `.tsx` rather than markdown. Never write a bare class name in a comment.
 
 ## Phase 7 — Content
 
 - [ ] **7.1 `src/data/skills.ts`** — ~15 skills sit commented out (TypeScript, Next.js, Python,
       FastAPI, Kafka, gRPC, Kubernetes, Grafana, Prometheus…). Notably **TypeScript and Next.js are
       hidden** while the site itself is built with both. Decide the real list.
-- [ ] **7.2 Missing-logo fallback.** `TanStack Query`, `WebRTC`, `TypeORM`, `CI/CD` have
-      `logo: ""` and render as bare text next to iconed peers — visually inconsistent. Design a
-      text/monogram fallback.
+- [x] **7.2 Closed in 5.6.** `TanStack Query`, `WebRTC`, `TypeORM` and `CI/CD` now render a
+      bordered monogram square at the same 20px footprint as the real icons, so the column no
+      longer has ragged rows. Nothing left to do here unless the skill list changes in 7.1.
 - [ ] **7.3 Experience dates.** Paywint reads `"Oct 2025 - Aug 2026"` — a fixed end date, not
       "Present". Confirm that's intended (today is Sep 2026).
 - [ ] **7.4 Project screenshots** — 2.6 was deferred here in full. Blocking for both UI and SEO.
@@ -348,12 +397,23 @@ Tailwind keyframes that were never active (see 2.3).
       `data/experience.ts`. Rename the latter (`ExperienceProject`) to avoid import confusion.
       Also: **`Project.logo` is a dead field** — every project sets it to `/api/placeholder/300/200`,
       a route that does not exist, and no component ever reads it. Kept deliberately in phase 2;
-      delete it here unless a use appears in phase 5.
+      **phase 5 found no use for it either, so delete it here.**
 - [ ] **7.6 About copy** is generic ("Curiosity drives me to keep learning"). Rewrite with
       specifics — the fintech domain work is genuinely differentiating and is currently buried.
 - [ ] **7.7 Add a downloadable resume** at `public/resume.pdf` with a hero CTA.
 
 ## Phase 8 — Verification
+
+**Already confirmed at the end of phase 6**, against the running production build: lint at 0
+warnings, build clean, all five project pages still `●` (SSG), `/sitemap.xml` still 7 URLs,
+`/opengraph-image` 200 `image/png`, the portrait served through the optimizer as `image/jpeg`,
+22 local skill SVGs with zero `_next/image` round-trips, no `data-theme` baked into SSR, and
+heading order clean with no skipped levels on `/`, `/projects`, `/projects/[id]` and 404.
+
+What that leaves for phase 8 is the part that needs a real browser or a real deploy — 8.2, 8.3,
+8.4, 8.5 — plus **a reduced-motion pass** (DevTools → Rendering → emulate
+`prefers-reduced-motion: reduce`, reload, confirm every section is *visible* and nothing moves).
+The CSS reset for that is verified in the bundle; the visual confirmation is not.
 
 - [ ] **8.1** `npm run build` + `npm run lint` clean. Note there is no longer a `postbuild` step —
       phase 4 removed `next-sitemap`, so the sitemap is a route, generated during the build itself.
@@ -373,5 +433,6 @@ Tailwind keyframes that were never active (see 2.3).
 ### Suggested commit slicing
 
 `0 → 1 → 2` in one PR (toolchain + fixes, no visual change), `3` (theme), `4` (SEO),
-`5 + 6` (the visible rewrite), `7` (content), `8` (verification). Keeping the SEO work in its own
+`5` then `6` (the visible rewrite — shipped as two commits, the motion one landing the
+reduced-motion guard alongside the first animation), `7` (content), `8` (verification). Keeping the SEO work in its own
 commit means you can point Search Console at a specific deploy if rankings move.
