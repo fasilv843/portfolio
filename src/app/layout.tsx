@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/Navbar";
@@ -17,6 +17,15 @@ import {
 
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Display face — headings only. Inter keeps every paragraph, label and control.
+// Single weight, latin subset, so this adds one small file to first paint.
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument",
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
@@ -143,11 +152,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // The font variable lives on <html> so that :root actually defines it —
-    // `@theme` in globals.css consumes it there.
+    // The font variables live on <html> so that :root actually defines them —
+    // `@theme` in globals.css consumes them there.
     // suppressHydrationWarning: next-themes stamps data-theme before React
     // hydrates, so the server and client markup necessarily differ here.
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${instrumentSerif.variable}`}
+      suppressHydrationWarning
+    >
       <body className="antialiased">
         {/* Plain script, not next/script: this is static data, so it belongs in
             the server output where crawlers reliably parse it. It previously
