@@ -82,36 +82,61 @@ Original survey (from `npm outdated`):
           `slide-up` keyframes stranded in the dead `tailwind.config.ts` are the first two motion
           tokens and must move into `globals.css` before 6.1 can build on them.
 
-## Phase 2 — Fix what is actually broken (before restyling)
+## Phase 2 — Fix what is actually broken ✅ done
 
-These are real bugs found in the current code; fix them before layering a new design on top.
+Landed as commits `6c10261`…`80e0804`. Two items were found to be worse or different than the
+original notes claimed — see 2.1 and 2.2.
 
-- [ ] **2.1 `next/image` remote host is not allowlisted.** `next.config.ts` `images.remotePatterns`
-      only permits `media.istockphoto.com`, but `src/data/skills.ts` feeds
-      `cdn.jsdelivr.net/gh/devicons/...` URLs straight into `<Image>` in `src/app/page.tsx`.
-      Either add the jsdelivr pattern **or** (better) vendor the ~25 devicon SVGs into
-      `public/icons/` — removes a third-party runtime dependency, kills the render-blocking CDN
-      round-trips, and lets the icons be `currentColor`-tinted per theme.
-- [ ] **2.2 The Inter font is not being applied.** `layout.tsx` exposes Inter as `--font-sans`, but
-      `globals.css` `@theme inline` then redefines `--font-sans: var(--font-geist-sans)` — a
-      variable that is never defined. `body { font-family: var(--font-sans, Arial) }` therefore
-      resolves to an invalid value. Also `--font-mono: var(--font-geist-mono)` is defined but never
-      used by any rule. Fix the variable names end to end.
-- [ ] **2.3 `tailwind.config.ts` is dead code.** Tailwind v4 is CSS-first; without an `@config`
-      directive in `globals.css` the file is never read. Consequence: the `fade-in` / `slide-up`
-      keyframes and the `background`/`primary`/`border` color aliases declared there **do nothing**.
-      Delete the file and move everything into `@theme` in `globals.css`.
-- [ ] **2.4 Dead / unused code.** `ThemeSelector.tsx` is never rendered. `toggleTheme` is
-      destructured in `Navbar.tsx` but unused. Large commented-out blocks: the contact form in
-      `page.tsx` (~65 lines), the theme buttons in `Navbar.tsx`, `generateStaticParams` in
-      `projects/[id]/page.tsx`, most of `skills.ts`. Decide keep-or-delete for each.
-- [ ] **2.5 `not-found.tsx` ignores the theme** — hardcoded `text-green-300`, `text-gray-300`,
-      `from-green-500 to-lime-500`. Left over from an older palette.
-- [ ] **2.6 No project images exist.** Every `image:` in `src/data/projects.ts` is commented out, so
-      every card renders the 🚀 emoji and the detail-page hero silently falls back to the plain
-      layout. Capture real screenshots — this is the single biggest visual win available.
-- [ ] **2.7 Smooth scroll is set imperatively** in a `Navbar` effect (`root.style.scrollBehavior`).
-      Move to CSS (`html { scroll-behavior: smooth }`) inside a `prefers-reduced-motion` guard.
+- [x] **2.1 Skill icons were broken in production.** All 22 devicon URLs in `skills.ts` pointed at
+      `cdn.jsdelivr.net`, which is not in `images.remotePatterns`, so `next/image` returned **400
+      (url parameter is not allowed)** for every one. The whole Skills section was broken images.
+
+      **Vendoring alone would not have fixed it.** `dangerouslyAllowSVG` defaults to `false` and the
+      optimizer rejects any `image/svg` upstream, so local SVGs through `<Image>` return 400 too —
+      the render had to change as well. The 22 SVGs now live in `public/icons/` and are rendered
+      with a plain `<img>`, which is correct for a 24px SVG anyway: no optimizer round-trip, no
+      third-party request on first paint. Verified: 22 local `img` tags, zero `_next/image` calls,
+      zero jsdelivr references in the served HTML.
+
+      `images.remotePatterns` is **left in place** — it allowlists `media.istockphoto.com` for the
+      commented-out `image:` values, which stay under the 2.6 deferral.
+- [x] **2.2 Fixed — but the original diagnosis was wrong.** Inter *was* being applied: the next/font
+      class on `<body>` declared `--font-sans: "Inter"`, which beat the `:root` value, so the `body`
+      rule resolved correctly. The real defects were that `--default-font-family` resolved to
+      `var(--font-geist-sans)` — **a variable nothing ever defined** — so `<html>` had no
+      font-family and every `font-sans` utility was dead, and that **Geist Mono was downloaded on
+      every page load and used by nothing**.
+
+      Root cause: the font variables were declared on `<body>` while `@theme` consumes them at
+      `:root`. Inter is now exposed as `--font-inter` with the variable class on **`<html>`**, with
+      `display: swap`. Geist Mono is gone; `--font-mono` falls back to Tailwind's default monospace
+      stack, so that utility works correctly for the first time. Verified in the emitted CSS: zero
+      `geist` references, one font file preloaded instead of two.
+- [x] **2.3 `tailwind.config.ts` deleted.** Confirmed fully dead — no `@config` directive, and every
+      declaration was either already duplicated in the `@theme inline` block or had zero usages
+      (including `gradient-radial` / `gradient-conic`). The two keyframes are ported into a plain
+      `@theme` block using v4's `--animate-*` namespace. Verified they now generate, where
+      previously they never did. Note that v4 tree-shakes unused theme values, so they only appear
+      in the bundle once phase 6 actually uses them.
+- [x] **2.4 Scoped to the commented-out contact form only** (66 lines removed from `page.tsx`).
+      **Deliberately kept:** `ThemeSelector.tsx`, the unused `toggleTheme` in `Navbar.tsx`,
+      `Project.logo`, and the commented theme buttons. Consequence: `npm run lint` reports **one
+      warning** (unused `toggleTheme`) — that is the accepted baseline, not a regression.
+- [x] **2.5 Both 404 pages are theme-aware now.** The plan only listed the root `not-found.tsx`, but
+      `projects/[id]/not-found.tsx` had the identical leftover palette. Both now use the foreground
+      tokens, and their hand-rolled links were replaced with the existing `Button` component so they
+      stop drifting from the rest of the site.
+- [ ] **2.6 Deferred to phase 7.** No project images exist; every `image:` in `src/data/projects.ts`
+      is commented out and all of them point at the *same* istockphoto stock photo, so uncommenting
+      is not a fix. Real screenshots needed — see **7.4**.
+- [x] **2.7 Smooth scroll moved to CSS**, gated on `prefers-reduced-motion: no-preference` so the
+      accessible behaviour is the default and smooth scrolling is the opt-in. First piece of the
+      reduced-motion handling **6.2** requires before any animation is added.
+- [x] **2.8 (new) Tailwind was generating utilities from markdown prose.** v4 auto-detects sources
+      across the whole project, markdown included — so this document *describing* class names in
+      item 2.5 caused Tailwind to emit real rules for them, four of which survived in the bundle
+      after the classes were gone from the code. Markdown is now excluded via `@source not`. Worth
+      knowing: without that fix, every class name written into this file in phases 3–6 would ship.
 
 ## Phase 3 — Theme system (dark + light)
 
@@ -286,9 +311,15 @@ Tailwind keyframes that were never active (see 2.3).
       text/monogram fallback.
 - [ ] **7.3 Experience dates.** Paywint reads `"Oct 2025 - Aug 2026"` — a fixed end date, not
       "Present". Confirm that's intended (today is Sep 2026).
-- [ ] **7.4 Project screenshots** — see 2.6. Blocking for both UI and SEO.
+- [ ] **7.4 Project screenshots** — 2.6 was deferred here in full. Blocking for both UI and SEO.
+      Note the existing commented-out `image:` values are all the *same* istockphoto stock photo, so
+      they are placeholders to delete, not content to restore. `next.config.ts` still allowlists
+      that host and can be dropped once real (local) screenshots land.
 - [ ] **7.5 Two different `Project` interfaces** exist: one in `data/projects.ts`, one in
       `data/experience.ts`. Rename the latter (`ExperienceProject`) to avoid import confusion.
+      Also: **`Project.logo` is a dead field** — every project sets it to `/api/placeholder/300/200`,
+      a route that does not exist, and no component ever reads it. Kept deliberately in phase 2;
+      delete it here unless a use appears in phase 5.
 - [ ] **7.6 About copy** is generic ("Curiosity drives me to keep learning"). Rewrite with
       specifics — the fintech domain work is genuinely differentiating and is currently buried.
 - [ ] **7.7 Add a downloadable resume** at `public/resume.pdf` with a hero CTA.
