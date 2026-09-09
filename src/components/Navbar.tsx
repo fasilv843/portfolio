@@ -9,9 +9,11 @@ export default function Navbar() {
   const { toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState<string>("hero");
-  const [hideBrand, setHideBrand] = useState<boolean>(true);
+  const [heroInView, setHeroInView] = useState<boolean>(true);
   const pathname = usePathname();
   const isHome = pathname === "/";
+  // Brand only hides behind the hero, which only exists on the home page.
+  const hideBrand = isHome && heroInView;
 
   // Smooth scroll behavior for in-page links
   useEffect(() => {
@@ -20,15 +22,6 @@ export default function Navbar() {
     root.style.scrollBehavior = "smooth";
     return () => { root.style.scrollBehavior = "auto"; };
   }, []);
-
-  // Ensure brand is visible on non-home pages
-  useEffect(() => {
-    if (pathname !== "/") {
-      setHideBrand(false);
-    } else {
-      setHideBrand(true);
-    }
-  }, [pathname]);
 
   // Scrollspy + hero visibility (home page only)
   useEffect(() => {
@@ -61,7 +54,7 @@ export default function Navbar() {
           current = best ? best.id : "hero";
         }
         setActiveId(current);
-        setHideBrand(current === "hero");
+        setHeroInView(current === "hero");
       });
     };
 
