@@ -24,7 +24,6 @@ export function truncate(text: string, max = 160): string {
 }
 
 export const EMAIL = "fasilv.in@gmail.com";
-export const REPO_URL = "https://github.com/fasilv843/Portfolio";
 
 /**
  * Labelled so the UI can render them; `SOCIAL_LINKS` below is derived from the

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Project } from "@/data/projects";
 import Tag from "./ui/Tag";
+import { GitHubIcon, GlobeIcon } from "./ui/icons";
 
 // No "use client" — this has no state, no handlers and no hooks. It was only a
 // client component because it imported Button, which used to carry the directive.
@@ -65,7 +66,11 @@ export default function ProjectCard({
           {project.description}
         </p>
 
-        <div className="mt-5 flex flex-wrap gap-2">
+        {/* mb-6 is the floor for the gap under the chips: the link row below
+            uses mt-auto to keep footers aligned across the grid, and that
+            collapses to zero on a card whose content already fills it, putting
+            the divider flush against the tags. */}
+        <div className="mt-5 mb-6 flex flex-wrap gap-2">
           {project.technologies.slice(0, 4).map((tech) => (
             <Tag key={tech}>{tech}</Tag>
           ))}
@@ -80,10 +85,13 @@ export default function ProjectCard({
                 href={project.liveLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary focus-visible:outline-ring text-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="text-primary focus-visible:outline-ring inline-flex items-center gap-2 text-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
               >
-                Live site
-                <span className="sr-only"> for {project.name}</span> ↗
+                <GlobeIcon />
+                <span>
+                  Live site
+                  <span className="sr-only"> for {project.name}</span>
+                </span>
               </a>
             )}
             {project.sourceCode && (
@@ -91,10 +99,13 @@ export default function ProjectCard({
                 href={project.sourceCode}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-foreground-muted hover:text-foreground focus-visible:outline-ring text-sm underline-offset-4 transition hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+                className="text-foreground-muted hover:text-foreground focus-visible:outline-ring inline-flex items-center gap-2 text-sm underline-offset-4 transition hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
               >
-                Source
-                <span className="sr-only"> for {project.name}</span> ↗
+                <GitHubIcon />
+                <span>
+                  Source
+                  <span className="sr-only"> for {project.name}</span>
+                </span>
               </a>
             )}
           </div>

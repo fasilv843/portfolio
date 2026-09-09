@@ -1,6 +1,6 @@
+import Link from "next/link";
 import Section from "@/components/ui/Section";
 import ProjectCard from "@/components/ProjectCard";
-import Button from "@/components/Button";
 import { projects } from "@/data/projects";
 
 // Four, not three: the grid is 2-up at one shared container width, so an odd
@@ -11,7 +11,7 @@ export default function Projects() {
   return (
     <Section
       id="projects"
-      index="03"
+      index="04"
       title="Featured Projects"
       lead="A few things I've built end to end, from schema to deploy."
     >
@@ -23,14 +23,15 @@ export default function Projects() {
         ))}
       </div>
       {projects.length > featuredProjects.length && (
-        <div className="mt-12">
-          <Button
+        // Same hairline-rule-then-link shape as a ProjectCard footer, so the
+        // grid closes the way each card in it does.
+        <div className="border-border mt-12 flex justify-end border-t pt-6">
+          <Link
             href="/projects"
-            label="All projects"
-            color="outline"
-            iconPosition="right"
-            icon={<span aria-hidden="true">→</span>}
-          />
+            className="text-primary focus-visible:outline-ring inline-flex items-center gap-2 text-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            All projects <span aria-hidden="true">→</span>
+          </Link>
         </div>
       )}
     </Section>

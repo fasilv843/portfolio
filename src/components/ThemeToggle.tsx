@@ -24,7 +24,10 @@ export default function ThemeToggle({
       // Static label: the active theme genuinely is not known at render time.
       aria-label="Toggle theme"
       title="Toggle theme"
-      className={`group border-border-interactive text-foreground hover:bg-surface-raised focus-visible:outline-ring inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
+      // No resting border: the button sits among borderless nav links, and a
+      // boxed icon was the only outlined thing in the bar. The hover tint and
+      // the focus ring carry the affordance instead.
+      className={`group text-foreground-muted hover:text-foreground hover:bg-surface-raised focus-visible:outline-ring inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
     >
       {/* The icon swap itself stays a display swap rather than an animated
           cross-fade: ThemeProvider runs with disableTransitionOnChange, which

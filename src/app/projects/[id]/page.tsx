@@ -5,6 +5,7 @@ import Image from "next/image";
 import Button from "@/components/Button";
 import Footer from "@/components/Footer";
 import Tag from "@/components/ui/Tag";
+import { GitHubIcon, GlobeIcon } from "@/components/ui/icons";
 import { Metadata } from "next";
 import { AUTHOR, SITE_NAME, TWITTER_HANDLE, truncate, url } from "@/lib/site";
 
@@ -162,6 +163,7 @@ export default async function ProjectPage({
                 <Button
                   href={project.liveLink}
                   label="View live site"
+                  icon={<GlobeIcon />}
                   className="w-full"
                 />
               )}
@@ -169,6 +171,7 @@ export default async function ProjectPage({
                 <Button
                   href={project.sourceCode}
                   label="View source"
+                  icon={<GitHubIcon />}
                   color="outline"
                   className="w-full"
                 />

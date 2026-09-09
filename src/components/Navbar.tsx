@@ -9,8 +9,8 @@ const SECTION_IDS = [
   "hero",
   "about",
   "skills",
-  "projects",
   "experience",
+  "projects",
   "contact",
 ];
 
@@ -57,8 +57,8 @@ export default function Navbar() {
     () => [
       { id: "about", label: "About" },
       { id: "skills", label: "Skills" },
-      { id: "projects", label: "Projects" },
       { id: "experience", label: "Experience" },
+      { id: "projects", label: "Projects" },
       { id: "contact", label: "Contact" },
     ],
     [],
@@ -94,7 +94,9 @@ export default function Navbar() {
           {isHome && (
             <button
               type="button"
-              className="border-border-interactive focus-visible:outline-ring inline-flex h-10 w-10 items-center justify-center rounded-md border focus-visible:outline-2 focus-visible:outline-offset-2 md:hidden"
+              // Borderless to match ThemeToggle, its immediate neighbour — the
+              // hover tint carries the affordance instead of a resting outline.
+              className="text-foreground-muted hover:text-foreground hover:bg-surface-raised focus-visible:outline-ring inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 md:hidden"
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Toggle menu"
               aria-expanded={menuOpen}
