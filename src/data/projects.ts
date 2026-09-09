@@ -2,7 +2,6 @@ export interface Project {
   id: string;
   name: string;
   subheading: string;
-  logo: string;
   image?: string;
   description: string;
   technologies: string[];
@@ -17,7 +16,6 @@ export const projects: Project[] = [
     id: "cinesnap",
     name: "CineSnap",
     subheading: "A Movie Booking Website",
-    logo: "/api/placeholder/300/200",
     description:
       "CineSnap is a full-featured movie booking platform that simplifies ticket purchases while providing real-time updates and a seamless user experience.",
     technologies: [
@@ -53,7 +51,6 @@ export const projects: Project[] = [
     id: "gentsgarage",
     name: "Gents Garage",
     subheading: "An E-Commerce Platform for Gent's Accessories",
-    logo: "/api/placeholder/300/200",
     description:
       "Gents Garage is a modern e-commerce platform for men's accessories, designed to offer smooth browsing, reliable payments, and efficient order management.",
     technologies: ["Node", "Express", "MongoDB", "EJS", "Bootstrap"],
@@ -72,7 +69,6 @@ export const projects: Project[] = [
     id: "passerby",
     name: "Passerby",
     subheading: "A peer-to-peer real time video call app",
-    logo: "/api/placeholder/300/200",
     description:
       "Passerby is a peer-to-peer real-time video chat application that enables seamless communication with dynamic room management and low-latency connections.",
     technologies: [
@@ -96,7 +92,6 @@ export const projects: Project[] = [
     id: "trace53",
     name: "Trace53",
     subheading: "An Authoritative DNS Server",
-    logo: "/api/placeholder/300/200",
     description:
       "Trace53 is a custom DNS server built for accuracy, speed, and robust handling of complex domain queries.",
     technologies: ["Node", "TypeScript"],
@@ -113,7 +108,6 @@ export const projects: Project[] = [
     id: "microservice-sample",
     name: "Microservice Demo",
     subheading: "A Sample microservice social media backend",
-    logo: "/api/placeholder/300/200",
     description:
       "A sample microservices backend demonstrating scalable, modular architecture with event-driven communication and centralized logging for social media applications.",
     technologies: ["Node", "Express", "Redis", "Docker", "RabbitMQ", "Winston"],
