@@ -56,12 +56,16 @@ Original survey (from `npm outdated`):
 
 - [x] **1.4 TypeScript 5 → 7 is BLOCKED.** Holding at **5.9.3**. TypeScript 7.0.2 is the Go native
       port; its `exports` map is `"." → lib/version.cjs` plus `./unstable/*` — **the classic JS
-      compiler API is gone**. Blockers, in order: 1. **typescript-eslint** (via `eslint-config-next` → `typescript-eslint@^8.46.0`) — hard
-      blocker. Peer is `typescript >=4.8.4 <6.1.0`, so install fails ERESOLVE, and
-      `@typescript-eslint/typescript-estree` structurally needs the classic API to parse.
-      `next/typescript` would stop working entirely. **There is no typescript-eslint v9** —
-      dist-tags are `latest: 8.70.0` only. 2. `plugins: [{ "name": "next" }]` in `tsconfig.json` — TS 7 is LSP-based and does not load
-      classic language-service plugins, so Next's editor diagnostics would be lost. Editor-only. 3. **No stable TypeScript 6** exists (only `6.0.0-beta`) — there is no intermediate step.
+      compiler API is gone**. Blockers, in order:
+
+      - **typescript-eslint** (via `eslint-config-next` → `typescript-eslint@^8.46.0`) — hard
+        blocker. Peer is `typescript >=4.8.4 <6.1.0`, so install fails ERESOLVE, and
+        `@typescript-eslint/typescript-estree` structurally needs the classic API to parse.
+        `next/typescript` would stop working entirely. **There is no typescript-eslint v9** —
+        dist-tags are `latest: 8.70.0` only.
+      - `plugins: [{ "name": "next" }]` in `tsconfig.json` — TS 7 is LSP-based and does not load
+        classic language-service plugins, so Next's editor diagnostics would be lost. Editor-only.
+      - **No stable TypeScript 6** exists (only `6.0.0-beta`) — there is no intermediate step.
 
       `next build` itself is *fine*: Next 16.3.4 already anticipates TS 7 —
           `experimental.useTypeScriptCli` defaults to `true` and it shells out to `tsc` rather than
