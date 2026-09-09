@@ -2,22 +2,35 @@ import { projects } from "@/data/projects";
 import Button from "@/components/Button";
 import ProjectCard from "@/components/ProjectCard";
 import type { Metadata } from "next";
+import { SITE_NAME, TWITTER_HANDLE, url } from "@/lib/site";
+
+const DESCRIPTION =
+  "Full-stack projects by Fasil Valiyattil — movie booking, fintech and microservice applications built with Angular, React, Node.js, NestJS, MongoDB and AWS.";
 
 export const metadata: Metadata = {
-  title: "Projects - Fasil Valiyattil",
-  description: "Explore the portfolio projects of Fasil Valiyattil...",
+  // Root layout's template appends "| Fasil Valiyattil".
+  title: "Projects",
+  description: DESCRIPTION,
   keywords: ["projects", "portfolio projects", "full-stack"],
+  alternates: { canonical: "/projects" },
   openGraph: {
-    title: "Fasil Valiyattil Projects",
-    description: "A showcase of web development projects...",
-    url: "https://fasilv.in/projects",
+    title: "Projects",
+    description: DESCRIPTION,
+    url: url("/projects"),
+    siteName: SITE_NAME,
+    locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: TWITTER_HANDLE,
+    creator: TWITTER_HANDLE,
   },
 };
 
 export default function ProjectsPage() {
   return (
-    <main className="min-h-screen px-4 py-20">
+    <main id="main" className="min-h-screen px-4 py-20">
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <h1 className="gradient-text mb-4 text-5xl font-bold">

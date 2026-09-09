@@ -196,63 +196,69 @@ Uncommitted at time of writing — under review.
       While in the mobile menu button, added the `aria-expanded` / `aria-controls` that **4.15**
       asks for.
 
-## Phase 4 — SEO corrections
+## Phase 4 — SEO corrections ✅ done
 
-Audited against `layout.tsx`, `projects/page.tsx`, `projects/[id]/page.tsx`,
-`next-sitemap.config.js`, `public/robots.txt`, `public/site.webmanifest`.
+Uncommitted at time of writing — under review.
 
-**Correct today:** `metadataBase`, canonical on `/`, OG image 1200×630 with alt, Twitter
-`summary_large_image`, `Person` JSON-LD with `sameAs`, sitemap on the `www` canonical host.
+- [x] **4.1 Project pages were invisible to search.** The generated `sitemap-0.xml` held exactly two
+      URLs; all five project pages were unlinked, and `generateStaticParams` was commented out so
+      they were server-rendered on demand. Replaced `next-sitemap` with native
+      `src/app/sitemap.ts` + `src/app/robots.ts` that **derive from the `projects` array**, so the
+      sitemap cannot drift again. `generateStaticParams` restored. Verified: `/sitemap.xml` now
+      returns **7 URLs** and the build reports all five project pages as `●` (SSG), not `ƒ`.
 
-Problems, highest impact first:
+      **The blocker worth remembering:** `public/robots.txt`, `public/sitemap.xml` and
+      `public/sitemap-0.xml` were committed to git, and a static file in `public/` **shadows** an
+      App Router route of the same path. The new routes were dead until those were deleted — and it
+      would have looked like it worked, just serving the stale two-URL sitemap.
+      `next-sitemap`, its config and the `postbuild` script are all gone.
+- [x] **4.2 Domain unified** behind `SITE_URL` in the new `src/lib/site.ts`, which also holds
+      `SITE_NAME` / `AUTHOR` / `ROLE` / `TWITTER_HANDLE` / `SOCIAL_LINKS` and a `truncate()` helper.
+      Verified zero non-`www` `fasilv.in` references in the served HTML.
+- [x] **4.3 / 4.14 OG cards are now generated** with `next/og` (ships with Next 16, no new
+      dependency): `opengraph-image.tsx` at the root, on `/projects`, and per project. All three
+      verified returning **HTTP 200, `image/png`, 1200×630**.
 
-- [ ] **4.1 Project detail pages are invisible to search engines.**
-      `generateStaticParams` is commented out in `projects/[id]/page.tsx`, and the generated
-      `public/sitemap-0.xml` contains only **two** URLs (`/` and `/projects`). Every individual
-      project page is unlinked from the sitemap. Uncomment `generateStaticParams` and make the
-      sitemap enumerate all project IDs. Simplest fix: **replace `next-sitemap` with the native
-      App Router `src/app/sitemap.ts` + `src/app/robots.ts`**, which read `projects` directly and
-      can never drift. That also removes the `postbuild` step and a dependency.
-- [ ] **4.2 Domain inconsistency.** `alternates.canonical` and the sitemap use `https://www.fasilv.in`,
-      but `openGraph.url` in `projects/page.tsx` and `projects/[id]/page.tsx` uses
-      `https://fasilv.in` (no `www`). Pick one — the `www` form, per `next-sitemap.config.js` — and
-      define it once as a `SITE_URL` constant in `src/lib/site.ts` used everywhere.
-- [ ] **4.3 Broken OG fallback image.** `projects/[id]/page.tsx` falls back to
-      `https://via.placeholder.com/...`. That service is dead — social cards for image-less projects
-      get a broken preview. Fall back to `/logo.png`, or better, generate per-project cards with
-      `next/og` (`opengraph-image.tsx`).
-- [ ] **4.4 Missing canonicals** on `/projects` and `/projects/[id]`. Add `alternates.canonical` to
-      both.
-- [ ] **4.5 The webmanifest is never linked.** `public/site.webmanifest` exists but `layout.tsx`'s
-      `metadata.icons` doesn't reference it. Add `manifest: "/site.webmanifest"`.
-- [ ] **4.6 Add a title template**: `title: { default: "Fasil Valiyattil — Full-Stack Developer",
-  template: "%s | Fasil Valiyattil" }`, then drop the hand-written `"- Fasil Valiyattil"`
-      suffixes in the child pages. Also: the root `title` is bare `"Fasil Valiyattil"` with no role
-      or keyword — weak as a SERP headline.
-- [ ] **4.7 Fill in the OG gaps** on the root: `siteName`, `locale: "en_US"`, `url`. Add
-      `twitter.creator` (only `site` is set). Add an explicit `robots` block
-      (`index, follow`, `googleBot: { "max-image-preview": "large", "max-snippet": -1 }`).
-- [ ] **4.8 Move to `export const viewport`.** Mostly done in phase 3: the export now exists in
-      `layout.tsx` with per-scheme `themeColor` and `colorScheme`. Only `width` is still undeclared.
-- [ ] **4.9 Render JSON-LD server-side.** It currently ships via
-      `<Script strategy="afterInteractive">`. A plain `<script type="application/ld+json">` in the
-      server output is more reliably parsed. While there: add a `WebSite` schema, a
-      `BreadcrumbList` on project pages, and `CreativeWork`/`SoftwareApplication` per project.
-      Consider `knowsAbout` + `alumniOf`/`worksFor` on the `Person` node.
-- [ ] **4.10 `robots.txt` emits two conflicting `User-agent: *` groups** — one `Allow: /`, one
-      `Disallow: /404`. Collapse into a single group. (Moot if 4.1 replaces `next-sitemap`.)
-- [ ] **4.11 Neither `not-found.tsx` has metadata** — no title, and both should be `noindex`.
-      Phase 3 restyled both files but deliberately left metadata alone; still outstanding.
-- [ ] **4.12 Thin descriptions.** `projects/page.tsx` ships literal ellipses:
-      `"Explore the portfolio projects of Fasil Valiyattil..."`. Write real 150–160 char copy.
-- [ ] **4.13 Heading hierarchy.** The home page opens `h1` → `h2` → `h2` (the tagline "Full-Stack
-      Developer" is an `h2` competing with every section heading), and the experience cards nest
-      `h3` → `h5` → `h6`, skipping `h4`. Flatten.
-- [ ] **4.14 Add `src/app/opengraph-image.tsx`** so the home OG card is generated rather than
-      reusing `logo.png` (a square logo is a poor 1200×630 card).
-- [ ] **4.15 Accessibility items that also affect SEO**: no skip-to-content link, the decorative
-      emoji avatar has no text alternative strategy, the mobile menu button lacks
-      `aria-expanded`/`aria-controls`.
+      Two findings the original notes did not have: `logo.png` is actually **831×814**, yet the
+      metadata declared it `1200×630` — every social share was handed wrong dimensions. And
+      `via.placeholder.com` is **confirmed dead** (request times out). Both are gone; the
+      hand-written `openGraph.images` arrays were removed so the file-based convention is the only
+      source.
+
+      *Gotcha for later:* Satori requires an explicit `display` on any element with more than one
+      child — `{projects.length} full-stack builds` counts as two and failed the build until it was
+      made a single interpolated string. Every div in those files now sets `display` explicitly.
+- [x] **4.4 Canonicals added** to `/projects` and `/projects/[id]`; verified on every route.
+- [x] **4.5 Manifest linked** via `metadata.manifest`. It existed but nothing referenced it.
+- [x] **4.6 Title template** in place. Verified: `"Projects | Fasil Valiyattil"`,
+      `"CineSnap | Fasil Valiyattil"` — no doubled suffixes. Root is now
+      `"Fasil Valiyattil — Full-Stack Developer"` instead of the bare name.
+- [x] **4.7 OG gaps filled**: `siteName`, `locale`, `url`, `twitter.creator`, and an explicit
+      `robots` block with the `googleBot` directives.
+- [x] **4.8 `viewport` complete** — phase 3 added `themeColor` / `colorScheme`; `width` and
+      `initialScale` added here.
+- [x] **4.9 JSON-LD server-rendered** as a plain `<script type="application/ld+json">` instead of
+      `next/script` with `afterInteractive`; `next/script` is no longer imported. `Person` gained
+      `worksFor` and `knowsAbout`, `WebSite` added at the root, and project pages carry
+      `BreadcrumbList` + `SoftwareApplication`. Verified in the server HTML: 2 blocks on `/`, 4 on a
+      project page.
+- [x] **4.10 `robots.txt` is one group** now. The `Disallow: /404` rule was dropped rather than
+      kept — App Router has no `/404` route, so it protected nothing; 4.11 handles noindex properly.
+- [x] **4.11 Both 404 pages** have `title` and `robots: { index: false }`.
+- [x] **4.12 Real descriptions** written for `/` and `/projects`, naming the actual stack; the
+      literal `"..."` placeholders are gone. Detail pages truncate `project.description` to 160.
+- [x] **4.13 Heading hierarchy flattened.** The hero tagline became a `<p>` (it was an `h2`
+      competing with every section heading) and the experience cards moved `h5`/`h6` → `h4`/`h5`.
+      Verified order is now `h1 → h2 → h3 → h4 → h5` with no skipped levels.
+- [x] **4.15 Accessibility**: skip-to-content link added as the first focusable element targeting
+      `<main id="main">` (added on every page); the decorative `👨‍💻` is now `aria-hidden`. The
+      `aria-expanded` / `aria-controls` part was already done in phase 3.
+
+**One thing to confirm on the real deploy:** locally, `next start` renders `og:image` with a
+`localhost:3000` origin, because Next falls back to a local metadata base when it re-renders
+metadata at request time. The **prerendered artifacts are correct** — `.next/server/app/index.html`
+and each project page carry `https://www.fasilv.in/...`, with and without Vercel env vars set — and
+those are what a deploy serves. Still worth spot-checking a live social card after deploying.
 
 ## Phase 5 — UI rewrite
 
@@ -349,13 +355,16 @@ Tailwind keyframes that were never active (see 2.3).
 
 ## Phase 8 — Verification
 
-- [ ] **8.1** `npm run build` + `npm run lint` clean.
+- [ ] **8.1** `npm run build` + `npm run lint` clean. Note there is no longer a `postbuild` step —
+      phase 4 removed `next-sitemap`, so the sitemap is a route, generated during the build itself.
 - [ ] **8.2** Lighthouse on `/`, `/projects`, `/projects/[id]` — target 95+ across the board,
       in **both** themes.
 - [ ] **8.3** Validate structured data (Google Rich Results Test) and the OG/Twitter cards
       (opengraph.xyz).
 - [ ] **8.4** Keyboard-only pass + screen-reader pass on the nav, theme toggle and cards.
-- [ ] **8.5** Re-submit the sitemap in Google Search Console once project URLs are included (4.1).
+- [ ] **8.5** Re-submit the sitemap in Google Search Console — the project URLs are included as of
+      4.1. The URL is unchanged (`/sitemap.xml`) but it is now a route rather than a static file, so
+      confirm Search Console fetches all 7 URLs.
 - [ ] **8.6** Check `tsconfig.tsbuildinfo` (94 KB, at repo root) is genuinely ignored — `.gitignore`
       covers `*.tsbuildinfo`, so just confirm it was never committed.
 

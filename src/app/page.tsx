@@ -8,7 +8,7 @@ export default function Home() {
   const featuredProjects = projects.slice(0, 3);
 
   return (
-    <main className="min-h-screen">
+    <main id="main" className="min-h-screen">
       {/* Hero Section */}
       <section
         id="hero"
@@ -27,9 +27,11 @@ export default function Home() {
                 Fasil Valiyattil
               </h1>
             </div>
-            <h2 className="text-foreground-muted text-2xl font-semibold lg:text-3xl">
+            {/* A tagline, not a section heading — as an h2 it competed with
+                every real section heading on the page. */}
+            <p className="text-foreground-muted text-2xl font-semibold lg:text-3xl">
               Full-Stack Developer
-            </h2>
+            </p>
             <p className="text-foreground-muted max-w-lg text-lg">
               Passionate about creating exceptional digital experiences with
               modern web technologies.
@@ -55,7 +57,9 @@ export default function Home() {
           </div>
           <div className="order-1 flex justify-center lg:order-2">
             <div className="border-border bg-surface-sunken flex h-80 w-80 items-center justify-center rounded-full border">
-              <span className="text-6xl">👨‍💻</span>
+              <span className="text-6xl" aria-hidden="true">
+                👨‍💻
+              </span>
             </div>
           </div>
         </div>
@@ -190,9 +194,9 @@ export default function Home() {
                     <div className="mt-6 grid gap-4">
                       {exp.achievements && (
                         <div>
-                          <h5 className="text-foreground mb-2 text-sm font-semibold">
+                          <h4 className="text-foreground mb-2 text-sm font-semibold">
                             Key Achievements
-                          </h5>
+                          </h4>
                           <ul className="text-foreground-muted list-inside list-disc space-y-2">
                             {exp.achievements.map((achievement, index) => (
                               <li key={index}>{achievement}</li>
@@ -201,9 +205,9 @@ export default function Home() {
                         </div>
                       )}
                       <div>
-                        <h5 className="text-foreground mb-2 text-sm font-semibold">
+                        <h4 className="text-foreground mb-2 text-sm font-semibold">
                           Projects
-                        </h5>
+                        </h4>
                         <div className="space-y-3">
                           {exp.projects.map((project, index) => (
                             <div
@@ -211,9 +215,9 @@ export default function Home() {
                               className="border-border bg-surface rounded-lg border p-3"
                             >
                               <div className="flex items-center justify-between">
-                                <h6 className="text-foreground font-semibold">
+                                <h5 className="text-foreground font-semibold">
                                   {project.name}
-                                </h6>
+                                </h5>
                               </div>
                               <p className="text-foreground-muted mt-1 text-sm">
                                 {project.description}

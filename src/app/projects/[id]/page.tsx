@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/Button";
 import { Metadata } from "next";
+import { AUTHOR, SITE_NAME, TWITTER_HANDLE, truncate, url } from "@/lib/site";
 
 export default async function ProjectPage({
   params,
@@ -17,8 +18,44 @@ export default async function ProjectPage({
     notFound();
   }
 
+  // Server-rendered so crawlers see it in the initial HTML.
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: url("/") },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Projects",
+          item: url("/projects"),
+        },
+        { "@type": "ListItem", position: 3, name: project.name },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: project.name,
+      description: project.description,
+      url: url(`/projects/${project.id}`),
+      applicationCategory: "WebApplication",
+      operatingSystem: "Web browser",
+      author: { "@type": "Person", name: AUTHOR, url: url("/") },
+      ...(project.liveLink && { installUrl: project.liveLink }),
+      ...(project.sourceCode && { codeRepository: project.sourceCode }),
+      keywords: project.technologies.join(", "),
+      isPartOf: { "@type": "WebSite", name: SITE_NAME, url: url("/") },
+    },
+  ];
+
   return (
-    <main className="min-h-screen">
+    <main id="main" className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero image with overlay */}
       <section className="relative w-full">
         {project.image ? (
@@ -261,31 +298,32 @@ export async function generateMetadata({
     };
   }
 
+  const description = truncate(project.description);
+
   return {
-    title: `${project.name} - Fasil Valiyattil`,
-    description: project.description,
+    // Root layout's template appends "| Fasil Valiyattil".
+    title: project.name,
+    description,
+    alternates: { canonical: `/projects/${project.id}` },
     openGraph: {
       title: project.name,
-      description: project.description,
-      url: `https://fasilv.in/projects/${project.id}`,
-      images: [
-        {
-          url:
-            project.image ||
-            "https://via.placeholder.com/1200x630.png?text=Fasil+Valiyattil+Portfolio",
-          width: 1200,
-          height: 630,
-        },
-      ],
+      description,
+      url: url(`/projects/${project.id}`),
+      type: "article",
+      // Images come from the sibling opengraph-image.tsx, which generates a real
+      // 1200x630 card. The old inline entry pointed at via.placeholder.com, a
+      // service that is now dead.
     },
     twitter: {
       card: "summary_large_image",
-      site: "@fasilv843",
-      creator: "@fasilv843",
+      site: TWITTER_HANDLE,
+      creator: TWITTER_HANDLE,
     },
   };
 }
 
-// export async function generateStaticParams() {
-//   return projects.map((project) => ({ id: project.id }));
-// }
+// Prerender all five project pages. Previously commented out, which left them
+// server-rendered on demand and absent from the sitemap.
+export async function generateStaticParams() {
+  return projects.map((project) => ({ id: project.id }));
+}

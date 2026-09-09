@@ -1,8 +1,18 @@
 import Button from "@/components/Button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Page Not Found",
+  description: "The page you're looking for doesn't exist or has moved.",
+  robots: { index: false, follow: true },
+};
 
 export default function NotFound() {
   return (
-    <main className="flex min-h-screen items-center justify-center px-4">
+    <main
+      id="main"
+      className="flex min-h-screen items-center justify-center px-4"
+    >
       <div className="text-center">
         <h1 className="gradient-text mb-4 text-6xl font-bold">404</h1>
         <h2 className="text-foreground mb-4 text-2xl font-semibold">
