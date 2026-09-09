@@ -379,7 +379,11 @@ than an observer.
       comments *explaining* the change were generating it. Exactly the 2.8 trap, but inside
       `.tsx` rather than markdown. Never write a bare class name in a comment.
 
-## Phase 7 — Content
+## Phase 7 — Content ✅ done (7.4, 7.6, 7.7 open by decision)
+
+Cut down by explicit decision: screenshots, the resume CTA and the skill-list expansion are out,
+the Paywint dates are correct as written, and the About wording stays the owner's to write. What
+executed was dead-code removal.
 
 - [ ] **7.1 `src/data/skills.ts`** — ~15 skills sit commented out (TypeScript, Next.js, Python,
       FastAPI, Kafka, gRPC, Kubernetes, Grafana, Prometheus…). Notably **TypeScript and Next.js are
@@ -387,46 +391,110 @@ than an observer.
 - [x] **7.2 Closed in 5.6.** `TanStack Query`, `WebRTC`, `TypeORM` and `CI/CD` now render a
       bordered monogram square at the same 20px footprint as the real icons, so the column no
       longer has ragged rows. Nothing left to do here unless the skill list changes in 7.1.
-- [ ] **7.3 Experience dates.** Paywint reads `"Oct 2025 - Aug 2026"` — a fixed end date, not
-      "Present". Confirm that's intended (today is Sep 2026).
-- [ ] **7.4 Project screenshots** — 2.6 was deferred here in full. Blocking for both UI and SEO.
-      Note the existing commented-out `image:` values are all the *same* istockphoto stock photo, so
-      they are placeholders to delete, not content to restore. `next.config.ts` still allowlists
-      that host and can be dropped once real (local) screenshots land.
-- [ ] **7.5 Two different `Project` interfaces** exist: one in `data/projects.ts`, one in
-      `data/experience.ts`. Rename the latter (`ExperienceProject`) to avoid import confusion.
-      Also: **`Project.logo` is a dead field** — every project sets it to `/api/placeholder/300/200`,
-      a route that does not exist, and no component ever reads it. Kept deliberately in phase 2;
-      **phase 5 found no use for it either, so delete it here.**
-- [ ] **7.6 About copy** is generic ("Curiosity drives me to keep learning"). Rewrite with
-      specifics — the fintech domain work is genuinely differentiating and is currently buried.
-- [ ] **7.7 Add a downloadable resume** at `public/resume.pdf` with a hero CTA.
+- [x] **7.3 Confirmed correct, no change.** The Paywint role genuinely ended Aug 2026; the fixed
+      end date is intentional, not stale data.
+- [ ] **7.4 Project screenshots — skipped by decision, still open.** The commented `image:` values
+      were all the *same* istockphoto stock photo, so they were placeholders to delete, not content
+      to restore; they are now **deleted**, along with five identical commented `demoUrl:` lines
+      that all pointed at the same rickroll YouTube embed. The optional `image?` and `demoUrl?`
+      fields survive, so real screenshots can land later with no other change. Until they do, cards
+      show a typographic letter placeholder. **This is what keeps 6.7 deferred** — a shared-element
+      view transition on a letter is not worth the experimental flag.
+- [x] **7.5 Both halves done.** `Project.logo` is gone — field and all five `/api/placeholder/300/200`
+      values; `tsc --noEmit` passing is the proof nothing read it. The colliding interface in
+      `experience.ts` is now `ExperienceProject`, with **zero call-site churn**: it was exported and
+      never imported anywhere.
+- [ ] **7.6 About copy — yours to write.** The words are untouched by request. `About.tsx` now
+      carries an explicit COPY SLOT comment naming what is weak (the second paragraph says nothing
+      specific) and listing the concrete material already sitting in `experience.ts`: FiChecks,
+      Finogates, the Aquacodes multi-tenant monitoring work.
+- [ ] **7.7 Resume — skipped by decision.** No `public/resume.pdf` exists and shipping a 404 button
+      is worse than shipping none.
+- [x] **7.8 (new) `next.config.ts` is now empty.** `images.remotePatterns` allowlisted
+      `media.istockphoto.com` and nothing else; with the commented URLs deleted in 7.4 it was config
+      pointing at a third-party host for no reason.
 
-## Phase 8 — Verification
+### 7.1 detail worth keeping
 
-**Already confirmed at the end of phase 6**, against the running production build: lint at 0
-warnings, build clean, all five project pages still `●` (SSG), `/sitemap.xml` still 7 URLs,
-`/opengraph-image` 200 `image/png`, the portrait served through the optimizer as `image/jpeg`,
-22 local skill SVGs with zero `_next/image` round-trips, no `data-theme` baked into SSR, and
-heading order clean with no skipped levels on `/`, `/projects`, `/projects/[id]` and 404.
+Re-enabling any commented-out skill **except `JWT` and `Lambda`** requires a new SVG in
+`public/icons/` — the other 12 reference files that do not exist (`typescript.svg`, `nextjs.svg`,
+`python.svg`, `kubernetes.svg`, …). The 22 icons that do exist are the 22 that are active.
 
-What that leaves for phase 8 is the part that needs a real browser or a real deploy — 8.2, 8.3,
-8.4, 8.5 — plus **a reduced-motion pass** (DevTools → Rendering → emulate
-`prefers-reduced-motion: reduce`, reload, confirm every section is *visible* and nothing moves).
-The CSS reset for that is verified in the bundle; the visual confirmation is not.
+## Phase 8 — Verification ✅ done (8.5 and the deploy checks are yours)
 
-- [ ] **8.1** `npm run build` + `npm run lint` clean. Note there is no longer a `postbuild` step —
-      phase 4 removed `next-sitemap`, so the sitemap is a route, generated during the build itself.
-- [ ] **8.2** Lighthouse on `/`, `/projects`, `/projects/[id]` — target 95+ across the board,
-      in **both** themes.
-- [ ] **8.3** Validate structured data (Google Rich Results Test) and the OG/Twitter cards
-      (opengraph.xyz).
-- [ ] **8.4** Keyboard-only pass + screen-reader pass on the nav, theme toggle and cards.
-- [ ] **8.5** Re-submit the sitemap in Google Search Console — the project URLs are included as of
-      4.1. The URL is unchanged (`/sitemap.xml`) but it is now a route rather than a static file, so
-      confirm Search Console fetches all 7 URLs.
-- [ ] **8.6** Check `tsconfig.tsbuildinfo` (94 KB, at repo root) is genuinely ignored — `.gitignore`
-      covers `*.tsbuildinfo`, so just confirm it was never committed.
+Run against a real headless Chrome and a production build, not assumed. Everything below is a
+measured result; where a number is an artifact of running on localhost, it says so.
+
+- [x] **8.1 Clean.** Lint 0 warnings, build green, five project pages `●` (SSG), `/sitemap.xml`
+      7 URLs, `/opengraph-image` 200 `image/png`. No `postbuild` step exists — phase 4 removed
+      `next-sitemap`, so the sitemap is generated during the build itself.
+- [x] **8.2 Lighthouse run** (`npx lighthouse@12`, headless, against `next start` on localhost):
+
+      | route | perf | a11y | best-practices | SEO |
+      | ----- | ---- | ---- | -------------- | --- |
+      | `/`                   | 84 | **100** | 96 | **100** |
+      | `/projects`           | **97** | **100** | 96 | **100** |
+      | `/projects/cinesnap`  | 89 | **100** | 96 | **100** |
+
+      **best-practices 96 is a local-only artifact**: the only failures are two 404s for
+      `/_vercel/insights/script.js` and `/_vercel/speed-insights/script.js`, which exist only on
+      Vercel. Expect 100 on the deploy.
+
+      **Performance did not hit 95 on `/` and needs re-measuring on the real deploy.** Every route
+      — including the two whose LCP element is a plain `<p>` — reports 2–3 s of LCP **render
+      delay** with `Load Time 0`, so the bottleneck is simulated main-thread work on a localhost
+      Node server, not delivery. Total page weight is 316 KiB and CLS is 0.
+
+      Three genuine defects were found and fixed on the way:
+      - The LCP element had **no `fetchpriority` hint**. `priority` on `next/image` emits the
+        preload link but not the attribute; Lighthouse checks for the attribute. Now explicit
+        (`priorityHinted: true` confirmed after).
+      - **`sizes` overstated the mobile width** (`16rem` where the frame is `w-56`/14rem), so the
+        browser fetched a wider candidate than it renders. Now tracks the real breakpoints.
+      - **The hero entrance was animating the LCP element.** `data-animate` uses
+        `animation-fill-mode: backwards`, which holds the portrait at `opacity: 0` through its
+        delay — and LCP only counts a real paint. Removing it did not move the localhost number
+        (render delay masks it there), but it is wrong on principle and *would* dominate LCP on a
+        fast connection where render delay is small. The text still staggers; only the photo is
+        exempt.
+- [x] **8.3 Structured data validated locally.** All blocks parse, carry `@context`, and have their
+      required fields: `Person` + `WebSite` on `/`; those plus `BreadcrumbList` +
+      `SoftwareApplication` on a project page. Google's Rich Results Test and opengraph.xyz both
+      need a public URL, so they stay in the post-deploy list below.
+- [x] **8.4 Static half done.** Lighthouse accessibility is **100 on all three routes**. Heading
+      order is unchanged from the phase-6 baseline with no skipped levels
+      (`/` = 1,2,2,3,3,3,3,2,3,3,3,3,2,3,4,5,5,3,4,5,5,5,2). The real screen-reader pass is still
+      yours.
+- [ ] **8.5 Search Console** — re-submit `/sitemap.xml`. Path unchanged, but it is now a route
+      rather than a static file, so confirm all 7 URLs are fetched.
+- [x] **8.6 Confirmed.** `.gitignore:40` covers `*.tsbuildinfo` and `git ls-files` shows
+      `tsconfig.tsbuildinfo` was never tracked. The file exists on disk and is correctly ignored.
+- [x] **8.7 (new) Reduced motion verified for real — and the first two attempts lied.**
+
+      Headless screenshots of an anchor-scrolled view came back blank, which looked exactly like
+      the failure 6.2 warns about. It was not: the same blankness appeared with reduced motion
+      **off**, so it was a capture-timing artifact — Chrome's `--screenshot` fires before the hash
+      scroll settles and before a `view()` timeline has advanced.
+
+      The real check reads **computed** opacity over CDP after scrolling each target into view:
+      all **20** reveal targets resolve to `opacity: 1` in **both** modes, and
+      `matchMedia('(prefers-reduced-motion: reduce)')` was confirmed `true` under the flag, so the
+      guard genuinely engages.
+
+      Two tooling notes for next time: `--blink-settings=preferredColorScheme=N` **does not work**
+      — light and dark captures came out byte-identical; use CDP `Emulation.setEmulatedMedia`.
+      And headless Chrome defaults to **dark**, which means the Lighthouse numbers above were
+      measured in the dark theme.
+
+### Still needs you
+
+- Lighthouse **on the deploy**, and once in dark via the real toggle (the headless run exercises
+  the `prefers-color-scheme` path, not an explicit `data-theme` choice from `localStorage`).
+- Rich Results Test + opengraph.xyz against the public URL.
+- A screen-reader pass. Static checks catch structure, not experience.
+- **8.5** Search Console.
+- **The phase-4 deploy check**: locally `next start` renders `og:image` with a `localhost:3000`
+  origin while the prerendered artifacts are correct. Spot-check a real social card after deploying.
 
 ---
 
