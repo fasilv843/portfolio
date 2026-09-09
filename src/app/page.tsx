@@ -1,7 +1,6 @@
 import { projects } from "@/data/projects";
 import { skillCategories } from "@/data/skills";
 import { experiences } from "@/data/experience";
-import Image from "next/image";
 import ProjectCard from "@/components/ProjectCard";
 import Button from "@/components/Button";
 
@@ -106,11 +105,17 @@ export default function Home() {
                       className="flex items-center space-x-3"
                     >
                       {skill.logo && (
-                        <Image
+                        // Plain <img>: these are static local SVGs, and next/image
+                        // refuses image/svg unless dangerouslyAllowSVG is set.
+                        // alt="" because the adjacent span already names the skill.
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
                           src={skill.logo}
-                          alt={skill.name}
+                          alt=""
                           width={24}
                           height={24}
+                          loading="lazy"
+                          decoding="async"
                           className="h-6 w-6"
                         />
                       )}
