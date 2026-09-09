@@ -1,4 +1,9 @@
-export interface Project {
+/**
+ * Named `ExperienceProject`, not `Project`: `data/projects.ts` exports a
+ * differently-shaped `Project`, and two identically-named types one import away
+ * from each other is a trap waiting for whoever imports the wrong one.
+ */
+export interface ExperienceProject {
   name: string;
   description: string;
   technologies: string[];
@@ -12,7 +17,7 @@ export interface Experience {
   location: string;
   description?: string;
   achievements?: string[];
-  projects: Project[];
+  projects: ExperienceProject[];
 }
 
 export const experiences: Experience[] = [
