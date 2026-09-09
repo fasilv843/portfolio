@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Tailwind v4 auto-detects sources across the project, which includes markdown.
+   REWRITE_PLAN.md names utility classes in prose (e.g. "text-green-300") and
+   Tailwind was generating real rules for them. Docs are not a class source. */
+@source not "../../**/*.md";
+
 /* Defaults mirror the "cyan" theme below, so the first paint already matches —
    ThemeProvider only sets data-theme after hydration. */
 :root {
