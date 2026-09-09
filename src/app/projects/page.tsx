@@ -1,6 +1,7 @@
 import { projects } from "@/data/projects";
 import Button from "@/components/Button";
 import ProjectCard from "@/components/ProjectCard";
+import Footer from "@/components/Footer";
 import type { Metadata } from "next";
 import { SITE_NAME, TWITTER_HANDLE, url } from "@/lib/site";
 
@@ -30,25 +31,30 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <main id="main" className="min-h-screen px-4 py-20">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-16 text-center">
-          <h1 className="gradient-text mb-4 text-5xl font-bold">
+    <main id="main" className="min-h-screen">
+      <div className="mx-auto w-full max-w-5xl px-6 py-28 md:py-36">
+        <div className="mb-20">
+          <h1 className="font-display text-display text-foreground text-balance">
             All Projects
           </h1>
-          <p className="text-foreground-muted mx-auto max-w-2xl text-xl">
+          <p className="text-foreground-muted text-lead mt-6 max-w-[68ch] text-pretty">
             A comprehensive showcase of my work, featuring full-stack
             applications, innovative solutions, and cutting-edge technologies.
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div data-reveal-group className="grid gap-8 md:grid-cols-2">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            // h2: these sit directly under the page h1, with no h2 between.
+            <ProjectCard
+              key={project.id}
+              project={project}
+              headingLevel="h2"
+            />
           ))}
         </div>
 
-        <div className="mt-16 text-center">
+        <div className="mt-20">
           <Button
             href="/"
             label="Back to Home"
@@ -72,6 +78,8 @@ export default function ProjectsPage() {
           />
         </div>
       </div>
+
+      <Footer />
     </main>
   );
 }
