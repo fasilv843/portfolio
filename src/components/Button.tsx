@@ -41,7 +41,11 @@ function getStyles(color: ButtonColor = "primary") {
   }
 }
 
-function Content({ label, icon, iconPosition = "left" }: Pick<CommonProps, "label" | "icon" | "iconPosition">) {
+function Content({
+  label,
+  icon,
+  iconPosition = "left",
+}: Pick<CommonProps, "label" | "icon" | "iconPosition">) {
   return (
     <span className="inline-flex items-center gap-2">
       {icon && iconPosition === "left" && icon}
@@ -52,22 +56,34 @@ function Content({ label, icon, iconPosition = "left" }: Pick<CommonProps, "labe
 }
 
 export default function Button(props: Props) {
-  const { label, icon, iconPosition = "left", color = "primary", className } = props;
+  const {
+    label,
+    icon,
+    iconPosition = "left",
+    color = "primary",
+    className,
+  } = props;
   const base = `inline-flex items-center px-5 py-2.5 rounded-lg transition-all duration-300 transform hover:scale-[1.02] ${getStyles(color)} ${className ?? ""}`;
 
   if ("href" in props && props.href) {
     return (
-      <Link href={props.href} className={base} {...("onClick" in props ? { onClick: props.onClick } : {})}>
+      <Link
+        href={props.href}
+        className={base}
+        {...("onClick" in props ? { onClick: props.onClick } : {})}
+      >
         <Content label={label} icon={icon} iconPosition={iconPosition} />
       </Link>
     );
   }
 
   return (
-    <button type={props.type ?? "button"} onClick={props.onClick} className={base}>
+    <button
+      type={props.type ?? "button"}
+      onClick={props.onClick}
+      className={base}
+    >
       <Content label={label} icon={icon} iconPosition={iconPosition} />
     </button>
   );
 }
-
-

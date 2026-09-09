@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 type ThemeName = "peacock" | "violet" | "cyan";
 
@@ -28,24 +35,31 @@ export function useTheme() {
  */
 const DEFAULT_THEME: ThemeName = "cyan";
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }>= ({ children }) => {
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeName>(DEFAULT_THEME);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", currentTheme);
   }, [currentTheme]);
 
-  const setTheme = useCallback((theme: ThemeName) => setCurrentTheme(theme), []);
+  const setTheme = useCallback(
+    (theme: ThemeName) => setCurrentTheme(theme),
+    [],
+  );
   const toggleTheme = useCallback(() => {
-    setCurrentTheme((prev) => (prev === "cyan" ? "peacock" : prev === "peacock" ? "violet" : "cyan"));
+    setCurrentTheme((prev) =>
+      prev === "cyan" ? "peacock" : prev === "peacock" ? "violet" : "cyan",
+    );
   }, []);
 
   const value = useMemo(
     () => ({ currentTheme, setTheme, toggleTheme }),
-    [currentTheme, setTheme, toggleTheme]
+    [currentTheme, setTheme, toggleTheme],
   );
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  );
 };
-
-

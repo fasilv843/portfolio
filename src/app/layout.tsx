@@ -20,11 +20,21 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.fasilv.in"),
   title: "Fasil Valiyattil",
-  description: "Personal portfolio of Fasil Valiyattil, a passionate full-stack developer specializing in modern web technologies and creating exceptional digital experiences.",
+  description:
+    "Personal portfolio of Fasil Valiyattil, a passionate full-stack developer specializing in modern web technologies and creating exceptional digital experiences.",
   keywords: [
-    "portfolio", "developer", "fava", "valiyattil", "vengara", "Muhammed Fasil V", "fasil",
-    "full-stack developer", "fintech developer", "Angular developer", "React developer",
-    "Node.js developer"
+    "portfolio",
+    "developer",
+    "fava",
+    "valiyattil",
+    "vengara",
+    "Muhammed Fasil V",
+    "fasil",
+    "full-stack developer",
+    "fintech developer",
+    "Angular developer",
+    "React developer",
+    "Node.js developer",
   ],
   authors: [{ name: "Fasil Valiyattil" }],
   alternates: {
@@ -37,24 +47,25 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Fasil Valiyattil Portfolio",
-    description: "Personal portfolio showcasing modern web development projects and skills",
+    description:
+      "Personal portfolio showcasing modern web development projects and skills",
     type: "website",
     images: [
       {
         url: "https://www.fasilv.in/logo.png",
         width: 1200,
         height: 630,
-        alt: "Fasil Valiyattil Portfolio"
-      }
-    ]
+        alt: "Fasil Valiyattil Portfolio",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Fasil Valiyattil Portfolio",
     description: "Showcasing web development projects, skills, and experience.",
     site: "@fasilv843",
-    images: ["https://www.fasilv.in/logo.png"]
-  }
+    images: ["https://www.fasilv.in/logo.png"],
+  },
 };
 
 export default function RootLayout({
@@ -73,18 +84,19 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
-              "name": "Fasil Valiyattil",
-              "url": "https://www.fasilv.in",
-              "jobTitle": "Full-Stack Developer",
-              "description": "Fasil Valiyattil is a Full-Stack Developer specializing in Angular, React, Node.js and Express, with experience building fintech products, showcasing personal projects and technical blogs.",
-              "image": "https://www.fasilv.in/logo.png",
-              "sameAs": [
+              name: "Fasil Valiyattil",
+              url: "https://www.fasilv.in",
+              jobTitle: "Full-Stack Developer",
+              description:
+                "Fasil Valiyattil is a Full-Stack Developer specializing in Angular, React, Node.js and Express, with experience building fintech products, showcasing personal projects and technical blogs.",
+              image: "https://www.fasilv.in/logo.png",
+              sameAs: [
                 "https://github.com/fasilv843",
                 "https://linkedin.com/in/fasilv843",
                 "https://www.instagram.com/fa_sil_v/",
                 "https://x.com/fasilv843",
-                "https://www.facebook.com/fasilv843"
-              ]
+                "https://www.facebook.com/fasilv843",
+              ],
             }),
           }}
         />

@@ -1,9 +1,9 @@
-import { projects } from '@/data/projects';
-import { skillCategories } from '@/data/skills';
-import { experiences } from '@/data/experience';
-import Image from 'next/image';
-import ProjectCard from '@/components/ProjectCard';
-import Button from '@/components/Button';
+import { projects } from "@/data/projects";
+import { skillCategories } from "@/data/skills";
+import { experiences } from "@/data/experience";
+import Image from "next/image";
+import ProjectCard from "@/components/ProjectCard";
+import Button from "@/components/Button";
 
 export default function Home() {
   const featuredProjects = projects.slice(0, 3);
@@ -11,44 +11,51 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section id="hero" className="min-h-screen flex items-center justify-center px-4 py-20 scroll-mt-20">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-7 text-center lg:text-left order-2 lg:order-1">
+      <section
+        id="hero"
+        className="flex min-h-screen scroll-mt-20 items-center justify-center px-4 py-20"
+      >
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
+          <div className="order-2 space-y-7 text-center lg:order-1 lg:text-left">
             <div>
-              <p className="text-base lg:text-lg text-foreground/60 italic pl-1">
+              <p className="text-foreground/60 pl-1 text-base italic lg:text-lg">
                 Hey there, I&apos;m
               </p>
-              <h1 className="text-5xl lg:text-7xl font-bold" style={{ letterSpacing: "0.5px" }}>
+              <h1
+                className="text-5xl font-bold lg:text-7xl"
+                style={{ letterSpacing: "0.5px" }}
+              >
                 Fasil Valiyattil
               </h1>
             </div>
-            <h2 className="text-2xl lg:text-3xl text-foreground/80 font-semibold">
+            <h2 className="text-foreground/80 text-2xl font-semibold lg:text-3xl">
               Full-Stack Developer
             </h2>
-            <p className="text-lg text-foreground/70 max-w-lg">
-              Passionate about creating exceptional digital experiences with modern web technologies.
+            <p className="text-foreground/70 max-w-lg text-lg">
+              Passionate about creating exceptional digital experiences with
+              modern web technologies.
             </p>
-            <div className="flex justify-center lg:justify-start space-x-6">
-              <a 
-                href="https://linkedin.com/in/fasilv843" 
-                target="_blank" 
+            <div className="flex justify-center space-x-6 lg:justify-start">
+              <a
+                href="https://linkedin.com/in/fasilv843"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 bg-[var(--primary)] text-black rounded-lg hover:brightness-110 transition-all duration-300 transform hover:scale-105"
+                className="transform rounded-lg bg-[var(--primary)] px-6 py-3 text-black transition-all duration-300 hover:scale-105 hover:brightness-110"
               >
                 LinkedIn
               </a>
-              <a 
-                href="https://github.com/fasilv843" 
-                target="_blank" 
+              <a
+                href="https://github.com/fasilv843"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="px-6 py-3 border-2 border-border text-foreground rounded-lg hover:bg-[var(--muted)] hover:border-[var(--border)] transition-all duration-300"
+                className="border-border text-foreground rounded-lg border-2 px-6 py-3 transition-all duration-300 hover:border-[var(--border)] hover:bg-[var(--muted)]"
               >
                 GitHub
               </a>
             </div>
           </div>
-          <div className="flex justify-center order-1 lg:order-2">
-            <div className="w-80 h-80 bg-[color-mix(in_oklab,var(--muted),black_10%)] rounded-full flex items-center justify-center border border-[var(--border)]">
+          <div className="order-1 flex justify-center lg:order-2">
+            <div className="flex h-80 w-80 items-center justify-center rounded-full border border-[var(--border)] bg-[color-mix(in_oklab,var(--muted),black_10%)]">
               <span className="text-6xl">👨‍💻</span>
             </div>
           </div>
@@ -56,44 +63,55 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-20 px-4 scroll-mt-20">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">About Me</h2>
+      <section id="about" className="scroll-mt-20 px-4 py-20">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="mb-12 text-center text-4xl font-bold">About Me</h2>
           <div className="rounded-2xl p-8">
-          <p className="text-lg text-foreground/80 leading-relaxed">
-            I&apos;m a full-stack developer who builds reliable, scalable systems across the stack —
-            Angular and React on the front end, Node.js on the back. Most recently I&apos;ve
-            worked on fintech products, where correctness and careful handling of edge cases matter
-            as much as the features themselves.
-          </p>
-          <p className="text-lg text-foreground/80 leading-relaxed mt-4">
-            Beyond coding, I like diving into challenges that push me to think differently, explore new tools, 
-            and refine my problem-solving skills. Curiosity drives me to keep learning and improving as I grow 
-            as a developer.
-          </p>
+            <p className="text-foreground/80 text-lg leading-relaxed">
+              I&apos;m a full-stack developer who builds reliable, scalable
+              systems across the stack — Angular and React on the front end,
+              Node.js on the back. Most recently I&apos;ve worked on fintech
+              products, where correctness and careful handling of edge cases
+              matter as much as the features themselves.
+            </p>
+            <p className="text-foreground/80 mt-4 text-lg leading-relaxed">
+              Beyond coding, I like diving into challenges that push me to think
+              differently, explore new tools, and refine my problem-solving
+              skills. Curiosity drives me to keep learning and improving as I
+              grow as a developer.
+            </p>
           </div>
         </div>
       </section>
 
-
       {/* Skills Section */}
-      <section id="skills" className="py-20 px-4 scroll-mt-20">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">Skills & Technologies</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <section id="skills" className="scroll-mt-20 px-4 py-20">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="mb-12 text-center text-4xl font-bold">
+            Skills & Technologies
+          </h2>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {skillCategories.map((category) => (
-              <div key={category.name} className="rounded-xl p-6 border gradient-border">
-                <h3 className="text-xl font-semibold text-foreground mb-4">{category.name}</h3>
+              <div
+                key={category.name}
+                className="gradient-border rounded-xl border p-6"
+              >
+                <h3 className="text-foreground mb-4 text-xl font-semibold">
+                  {category.name}
+                </h3>
                 <div className="space-y-3">
                   {category.skills.map((skill) => (
-                    <div key={skill.name} className="flex items-center space-x-3">
+                    <div
+                      key={skill.name}
+                      className="flex items-center space-x-3"
+                    >
                       {skill.logo && (
                         <Image
                           src={skill.logo}
                           alt={skill.name}
                           width={24}
                           height={24}
-                          className="w-6 h-6"
+                          className="h-6 w-6"
                         />
                       )}
                       <span className="text-foreground/80">{skill.name}</span>
@@ -107,10 +125,12 @@ export default function Home() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-20 px-4 scroll-mt-20">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">Featured Projects</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+      <section id="projects" className="scroll-mt-20 px-4 py-20">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="mb-12 text-center text-4xl font-bold">
+            Featured Projects
+          </h2>
+          <div className="mb-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {featuredProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
@@ -122,51 +142,79 @@ export default function Home() {
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="py-20 px-4 scroll-mt-20">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-12">Work Experience</h2>
+      <section id="experience" className="scroll-mt-20 px-4 py-20">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="mb-12 text-center text-4xl font-bold">
+            Work Experience
+          </h2>
           <div className="relative">
-            <div className="absolute left-4 top-0 bottom-0 w-px bg-[var(--border)]/60" aria-hidden />
+            <div
+              className="absolute top-0 bottom-0 left-4 w-px bg-[var(--border)]/60"
+              aria-hidden
+            />
             <div className="space-y-10">
               {experiences.map((exp) => (
                 <div key={exp.id} className="relative pl-14">
-                  <div className="absolute left-4 top-2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-[var(--primary)] shadow-[0_0_0_4px] shadow-[color-mix(in_oklab,var(--background),white_4%)] border border-[var(--border)]" aria-hidden />
+                  <div
+                    className="absolute top-2 left-4 h-3.5 w-3.5 -translate-x-1/2 rounded-full border border-[var(--border)] bg-[var(--primary)] shadow-[0_0_0_4px] shadow-[color-mix(in_oklab,var(--background),white_4%)]"
+                    aria-hidden
+                  />
                   <div className="rounded-2xl border border-[var(--border)]/50 bg-[color-mix(in_oklab,var(--background),white_3%)] p-6">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                    <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                       <div>
                         <div className="inline-flex items-center gap-2">
-                          <span className="text-sm px-2 py-0.5 rounded bg-[color-mix(in_oklab,var(--background),white_6%)] border border-[var(--border)]/40 text-foreground/70">{exp.duration}</span>
-                          <span className="text-sm px-2 py-0.5 rounded bg-[color-mix(in_oklab,var(--background),white_6%)] border border-[var(--border)]/40 text-foreground/70">{exp.location}</span>
+                          <span className="text-foreground/70 rounded border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_6%)] px-2 py-0.5 text-sm">
+                            {exp.duration}
+                          </span>
+                          <span className="text-foreground/70 rounded border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_6%)] px-2 py-0.5 text-sm">
+                            {exp.location}
+                          </span>
                         </div>
-                        <h3 className="mt-2 text-xl md:text-2xl font-semibold text-foreground">{exp.role}</h3>
+                        <h3 className="text-foreground mt-2 text-xl font-semibold md:text-2xl">
+                          {exp.role}
+                        </h3>
                         <p className="text-foreground/80">{exp.company}</p>
                       </div>
                       {/* <div className="hidden md:block text-sm text-foreground/60 mt-1">{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</div> */}
                     </div>
                     <p className="text-foreground/80 mt-4">{exp.description}</p>
                     <div className="mt-6 grid gap-4">
-                      {exp.achievements && 
+                      {exp.achievements && (
                         <div>
-                          <h5 className="text-sm font-semibold text-foreground mb-2">Key Achievements</h5>
-                          <ul className="space-y-2 text-foreground/80 list-disc list-inside">
+                          <h5 className="text-foreground mb-2 text-sm font-semibold">
+                            Key Achievements
+                          </h5>
+                          <ul className="text-foreground/80 list-inside list-disc space-y-2">
                             {exp.achievements.map((achievement, index) => (
                               <li key={index}>{achievement}</li>
                             ))}
                           </ul>
                         </div>
-                      }
+                      )}
                       <div>
-                        <h5 className="text-sm font-semibold text-foreground mb-2">Projects</h5>
+                        <h5 className="text-foreground mb-2 text-sm font-semibold">
+                          Projects
+                        </h5>
                         <div className="space-y-3">
                           {exp.projects.map((project, index) => (
-                            <div key={index} className="rounded-lg p-3 border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_4%)]">
+                            <div
+                              key={index}
+                              className="rounded-lg border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_4%)] p-3"
+                            >
                               <div className="flex items-center justify-between">
-                                <h6 className="font-semibold text-foreground">{project.name}</h6>
+                                <h6 className="text-foreground font-semibold">
+                                  {project.name}
+                                </h6>
                               </div>
-                              <p className="text-sm text-foreground/80 mt-1">{project.description}</p>
+                              <p className="text-foreground/80 mt-1 text-sm">
+                                {project.description}
+                              </p>
                               <div className="mt-2 flex flex-wrap gap-1.5">
                                 {project.technologies.map((tech) => (
-                                  <span key={tech} className="px-2 py-0.5 bg-[color-mix(in_oklab,var(--background),white_6%)] text-foreground/80 text-xs rounded border border-border/30">
+                                  <span
+                                    key={tech}
+                                    className="text-foreground/80 border-border/30 rounded border bg-[color-mix(in_oklab,var(--background),white_6%)] px-2 py-0.5 text-xs"
+                                  >
                                     {tech}
                                   </span>
                                 ))}
@@ -251,23 +299,24 @@ export default function Home() {
         </div>
       </section> */}
 
-      <section id="contact" className="py-20 px-4 scroll-mt-20">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">Get In Touch</h2>
-          <p className="text-lg text-foreground/70 mb-10">
-            Have a project in mind, a question, or just want to say hello? <br/>
+      <section id="contact" className="scroll-mt-20 px-4 py-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="mb-6 text-4xl font-bold">Get In Touch</h2>
+          <p className="text-foreground/70 mb-10 text-lg">
+            Have a project in mind, a question, or just want to say hello?{" "}
+            <br />
             I’d love to hear from you.
           </p>
           <Button href="mailto:fasilv.in@gmail.com" label="Contact Me" />
         </div>
       </section>
 
-
       {/* Footer */}
-      <footer className="py-12 px-4 border-t border-border/30">
-        <div className="max-w-6xl mx-auto text-center">
+      <footer className="border-border/30 border-t px-4 py-12">
+        <div className="mx-auto max-w-6xl text-center">
           <p className="text-foreground/60">
-            © 2026 Fasil Valiyattil. All rights reserved. Built with Next.js and Tailwind CSS.
+            © 2026 Fasil Valiyattil. All rights reserved. Built with Next.js and
+            Tailwind CSS.
           </p>
         </div>
       </footer>
