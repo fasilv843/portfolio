@@ -60,16 +60,24 @@ export default function Hero() {
         </div>
 
         <div className="order-1 lg:order-2">
-          <div
-            data-animate
-            className="border-border relative mx-auto aspect-[4/5] w-56 overflow-hidden rounded-sm border [animation-delay:140ms] sm:w-64 lg:mx-0 lg:w-full"
-          >
+          {/* Deliberately NOT data-animate. This is the LCP element, and the
+              entrance animation holds it at opacity 0 through its delay
+              (fill-mode backwards) — LCP only counts a real paint, so animating
+              it cost ~3s of render delay in Lighthouse for a 30KB image that
+              had already finished downloading. The text still staggers. */}
+          <div className="border-border relative mx-auto aspect-[4/5] w-56 overflow-hidden rounded-sm border sm:w-64 lg:mx-0 lg:w-full">
             <Image
               src="/portrait.jpg"
               alt={`${AUTHOR}, ${ROLE}`}
               fill
               priority
-              sizes="(min-width: 1024px) 22rem, 16rem"
+              // `priority` emits the preload link but not the attribute itself,
+              // and this is the LCP element — Lighthouse flags the missing hint.
+              fetchPriority="high"
+              // Must track the frame's own widths (w-56 / sm:w-64 / lg:w-full
+              // inside a max-w-5xl column). Claiming 16rem at mobile made the
+              // browser fetch a wider candidate than it renders.
+              sizes="(min-width: 1024px) 24rem, (min-width: 640px) 16rem, 14rem"
               className="object-cover object-top"
             />
           </div>
