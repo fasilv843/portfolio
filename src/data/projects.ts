@@ -46,10 +46,8 @@ export const projects: Project[] = [
       "Hosted frontend on AWS S3 with CloudFront and automated sync workflow, ensuring fast content delivery and continuous updates on code push.",
       "Configured AWS production infrastructure including EC2 setup, security groups, Elastic IP, Route 53 custom domains, and ACM SSL certificates for secure, scalable, and highly available access.",
     ],
-    // demoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     liveLink: "https://cinesnap.fasilv.in",
     sourceCode: "https://github.com/fasilv843/CineSnap-BackEnd",
-    // image: 'https://media.istockphoto.com/id/1163541604/photo/close-up-back-rear-behind-photo-handsome-he-him-his-guy-typing-writing-keyboard-development.jpg?s=1024x1024&w=is&k=20&c=8BmEEIsNoF87omt613I3OJjk9U_armpjn8s4KYSIe_E='
   },
   {
     id: "gentsgarage",
@@ -67,10 +65,8 @@ export const projects: Project[] = [
       "Designed a coupon and offers system to enhance profitability by targeting promotions effectively.",
       "Enabled an intuitive cart and wishlist system, allowing users to save items and streamline the checkout process.",
     ],
-    // demoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     liveLink: "https://gentsgarage.fasilv.in",
     sourceCode: "https://github.com/fasilv843/Gents-Garage",
-    // image: 'https://media.istockphoto.com/id/1163541604/photo/close-up-back-rear-behind-photo-handsome-he-him-his-guy-typing-writing-keyboard-development.jpg?s=1024x1024&w=is&k=20&c=8BmEEIsNoF87omt613I3OJjk9U_armpjn8s4KYSIe_E='
   },
   {
     id: "passerby",
@@ -93,10 +89,8 @@ export const projects: Project[] = [
       "Enhanced user experience by optimizing signaling flows, reducing connection setup latency, and ensuring efficient resource cleanup during frequent peer transitions.",
       "Improved system observability by adding Loki logging, Prometheus metrics, and Grafana dashboards, enabling performance monitoring, error tracking, and proactive debugging across the stack.",
     ],
-    // demoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     liveLink: "https://passerby.fasilv.in",
     sourceCode: "https://github.com/fasilv843/passerby",
-    // image: 'https://media.istockphoto.com/id/1163541604/photo/close-up-back-rear-behind-photo-handsome-he-him-his-guy-typing-writing-keyboard-development.jpg?s=1024x1024&w=is&k=20&c=8BmEEIsNoF87omt613I3OJjk9U_armpjn8s4KYSIe_E='
   },
   {
     id: "trace53",
@@ -113,7 +107,6 @@ export const projects: Project[] = [
       "Integrated the dns-packet npm library to encode and decode DNS binary packets, ensuring protocol-compliant communication.",
       "Deployed the DNS server on port 53 and tested query resolution for multiple domains and subdomains using dig, ensuring accurate and protocol-compliant responses.",
     ],
-    // demoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     sourceCode: "https://github.com/fasilv843/Trace53",
   },
   {
@@ -132,7 +125,6 @@ export const projects: Project[] = [
       "Built a centralized logging system using Winston for monitoring, troubleshooting, and auditing.",
       "Containerized microservices with Docker and orchestrated them using Docker Compose, enabling seamless local deployment and consistent development environments.",
     ],
-    // demoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     sourceCode: "https://github.com/fasilv843/microservice-social-media",
   },
 ];
