@@ -92,34 +92,38 @@
   --color-primary-contrast: var(--primary-contrast);
   --color-ring: var(--ring);
   --font-sans: var(--font-inter);
+  --font-display: var(--font-instrument);
 }
 
 /* Motion tokens. Not `inline` — these are literal values, not var() aliases.
    Ported from the old tailwind.config.ts, which Tailwind v4 never read. */
 @theme {
-  --animate-fade-in: fade-in 0.5s ease-in-out;
-  --animate-slide-up: slide-up 0.5s ease-out;
+  /* Motion easings. v4 has an --ease-* namespace, so these generate `ease-*`
+     utilities directly. There is no --duration-* namespace: durations use
+     Tailwind's built-ins, standardised as 150 fast / 200 base / 400 slow. */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+  /* Fluid display scale. Inter is a body face: neutral by design, so it reads
+     as UI chrome at 90px. These sizes are for --font-display only. */
+  --text-display: clamp(2.75rem, 1.2rem + 6.4vw, 6rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.02em;
 
-  @keyframes slide-up {
-    from {
-      transform: translateY(20px);
-      opacity: 0;
-    }
-    to {
-      transform: none;
-      opacity: 1;
-    }
-  }
+  --text-title: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  --text-title--line-height: 1.05;
+  --text-title--letter-spacing: -0.015em;
+
+  --text-lead: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  --text-lead--line-height: 1.5;
 }
+
+/* The --animate-fade-in / --animate-slide-up tokens ported in 2.3 lived here.
+   `slide-up` was byte-for-byte the `reveal-rise` keyframe defined further down,
+   and neither utility was ever used. Consolidated rather than shipping the same
+   keyframe twice: reveal-rise is a plain top-level keyframe, so it is not
+   subject to v4's tree-shaking of unused theme values — which is why the
+   originals never reached the bundle in the first place. */
 
 /* Smooth scroll is the opt-in, so the accessible behaviour is the default.
    First piece of the reduced-motion handling that phase 6 builds on. */
@@ -129,15 +133,95 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Reduced motion. This lands before any animation, not after.
+
+   The blanket rule alone is a trap: anything that starts at opacity 0 and
+   relies on an animation to become visible stays invisible when that animation
+   is neutralised. So every animated element is also explicitly reset to its
+   final state below, rather than being left to the near-zero duration.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal],
+  [data-reveal-group] > *,
+  [data-animate] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll reveal, driven entirely by the scroll timeline — no JS, no observer.
+
+   @supports is what makes this safe: browsers without scroll-driven animations
+   simply render the content statically. An IntersectionObserver fallback would
+   need a client component and would reintroduce the flash-of-hidden-content
+   problem for what is a purely decorative effect.
+--------------------------------------------------------------------------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal],
+    [data-reveal-group] > * {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 22%;
+    }
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Scroll progress bar. Also scroll-driven, so it costs no JS and no scroll
+   handler; where scroll timelines are unsupported it simply stays at zero
+   width, which is why it is aria-hidden and purely decorative. */
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    transform-origin: 0 50%;
+    animation: scroll-progress linear;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes scroll-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* First-paint hero entrance. Not scroll-driven — it runs once, above the fold.
+   `backwards` holds the from-state through the stagger delay so the elements
+   do not flash in before their turn. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-animate] {
+    animation: reveal-rise 0.6s var(--ease-out-quart) backwards;
+  }
+}
+
 body {
-  /* Token-driven so it reads correctly in both themes. The old version mixed
-     toward black, which was a grey smear on a light background. */
-  background: linear-gradient(
-    135deg,
-    var(--surface-sunken) 0%,
-    var(--background) 60%,
-    var(--surface-sunken) 100%
-  );
+  /* Flat, not the old 135deg gradient: in an editorial layout the ground stays
+     quiet and the type carries the page. */
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   min-height: 100vh;
@@ -167,18 +251,6 @@ html {
   background: var(--primary-strong);
 }
 
-/* Gradient text utility */
-.gradient-text {
-  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Gradient border utility */
-.gradient-border {
-  border: 2px solid transparent;
-  background:
-    linear-gradient(135deg, var(--surface), var(--surface-raised)) padding-box,
-    linear-gradient(135deg, var(--primary), var(--primary-strong)) border-box;
-}
+/* .gradient-text and .gradient-border lived here. Both are gone: the editorial
+   direction uses one accent sparingly and hairline rules instead of decorated
+   edges, so nothing referenced them any more. */
