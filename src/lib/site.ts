@@ -23,10 +23,19 @@ export function truncate(text: string, max = 160): string {
   return cut.slice(0, cut.lastIndexOf(" ")).trimEnd() + "…";
 }
 
-export const SOCIAL_LINKS = [
-  "https://github.com/fasilv843",
-  "https://linkedin.com/in/fasilv843",
-  "https://www.instagram.com/fa_sil_v/",
-  "https://x.com/fasilv843",
-  "https://www.facebook.com/fasilv843",
-];
+export const EMAIL = "fasilv.in@gmail.com";
+export const REPO_URL = "https://github.com/fasilv843/Portfolio";
+
+/**
+ * Labelled so the UI can render them; `SOCIAL_LINKS` below is derived from the
+ * same list, so the JSON-LD `sameAs` array cannot drift from what is on screen.
+ */
+export const SOCIALS = [
+  { label: "GitHub", href: "https://github.com/fasilv843" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/fasilv843" },
+  { label: "Instagram", href: "https://www.instagram.com/fa_sil_v/" },
+  { label: "X", href: "https://x.com/fasilv843" },
+  { label: "Facebook", href: "https://www.facebook.com/fasilv843" },
+] as const;
+
+export const SOCIAL_LINKS: string[] = SOCIALS.map((s) => s.href);
