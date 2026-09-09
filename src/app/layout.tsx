@@ -16,10 +16,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.fasilv.in"),
   title: "Fasil Valiyattil",
   description: "Personal portfolio of Fasil Valiyattil, a passionate full-stack developer specializing in modern web technologies and creating exceptional digital experiences.",
-  keywords: ["portfolio", "developer", "fava", "valiyattil", "vengara", "Muhammed Fasil V", "fasil"],
+  keywords: [
+    "portfolio", "developer", "fava", "valiyattil", "vengara", "Muhammed Fasil V", "fasil",
+    "full-stack developer", "fintech developer", "Angular developer", "React developer",
+    "Node.js developer"
+  ],
   authors: [{ name: "Fasil Valiyattil" }],
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/favicon.ico", // main favicon
     shortcut: "/favicon.ico",
@@ -31,7 +39,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://fasilv.in/logo.png",
+        url: "https://www.fasilv.in/logo.png",
         width: 1200,
         height: 630,
         alt: "Fasil Valiyattil Portfolio"
@@ -43,7 +51,7 @@ export const metadata: Metadata = {
     title: "Fasil Valiyattil Portfolio",
     description: "Showcasing web development projects, skills, and experience.",
     site: "@fasilv843",
-    images: ["https://fasilv.in/logo.png"]
+    images: ["https://www.fasilv.in/logo.png"]
   }
 };
 
@@ -65,8 +73,8 @@ export default function RootLayout({
               "@type": "Person",
               "name": "Fasil Valiyattil",
               "url": "https://www.fasilv.in",
-              "jobTitle": "MEAN Developer / Node.js Developer",
-              "description": "Fasil Valiyattil is a Software Developer specializing in Node.js, Express, Angular, showcasing personal projects and technical blogs.",
+              "jobTitle": "Full-Stack Developer",
+              "description": "Fasil Valiyattil is a Full-Stack Developer specializing in Angular, React, Node.js and Express, with experience building fintech products, showcasing personal projects and technical blogs.",
               "image": "https://www.fasilv.in/logo.png",
               "sameAs": [
                 "https://github.com/fasilv843",

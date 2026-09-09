@@ -12,6 +12,7 @@ export const skillCategories: SkillCategory[] = [
   {
     name: "Frontend",
     skills: [
+      // { name: "TypeScript", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
       { name: "Angular", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angular/angular-original.svg" },
       { name: "NgRx", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ngrx/ngrx-original.svg" },
       { name: "RxJS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rxjs/rxjs-original.svg" },
@@ -19,13 +20,17 @@ export const skillCategories: SkillCategory[] = [
       { name: "PrimeNG", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/primeng/primeng-original.svg" },
       // { name: "Angular Material", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/angularmaterial/angularmaterial-original.svg" },
       { name: "React", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
-      { name: "Next.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" }
+      // { name: "Next.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
+      // devicon has no TanStack Query icon, fall back to text-only
+      { name: "TanStack Query", logo: "" }
     ]
   },
   {
     name: "Backend",
     skills: [
       { name: "Node.js", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" },
+      // { name: "Python", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+      // { name: "FastAPI", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg" },
       { name: "Express", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" },
       { name: "NestJS", logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nestjs/nestjs-original.svg" },
       // { name: "JWT", logo: "" },

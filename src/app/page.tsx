@@ -61,9 +61,10 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-center mb-12">About Me</h2>
           <div className="rounded-2xl p-8">
           <p className="text-lg text-foreground/80 leading-relaxed">
-            I&apos;m a MEAN stack developer with a strong focus on backend development and building reliable, 
-            scalable systems. I enjoy working on the logic and structure that power applications, 
-            ensuring performance and maintainability behind the scenes.
+            I&apos;m a full-stack developer who builds reliable, scalable systems across the stack —
+            Angular and React on the front end, Node.js on the back. Most recently I&apos;ve
+            worked on fintech products, where correctness and careful handling of edge cases matter
+            as much as the features themselves.
           </p>
           <p className="text-lg text-foreground/80 leading-relaxed mt-4">
             Beyond coding, I like diving into challenges that push me to think differently, explore new tools, 
@@ -266,7 +267,7 @@ export default function Home() {
       <footer className="py-12 px-4 border-t border-border/30">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-foreground/60">
-            © 2025 Fasil Valiyattil. All rights reserved. Built with Next.js and Tailwind CSS.
+            © 2026 Fasil Valiyattil. All rights reserved. Built with Next.js and Tailwind CSS.
           </p>
         </div>
       </footer>

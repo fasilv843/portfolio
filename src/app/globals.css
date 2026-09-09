@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+/* Defaults mirror the "cyan" theme below, so the first paint already matches —
+   ThemeProvider only sets data-theme after hydration. */
 :root {
   --background: #0a0b0f; /* deep charcoal / night */
   --foreground: #e6e6ea; /* soft light grey */
