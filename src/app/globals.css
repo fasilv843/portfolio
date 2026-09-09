@@ -81,6 +81,14 @@ html[data-theme="cyan"] {
   }
 }
 
+/* Smooth scroll is the opt-in, so the accessible behaviour is the default.
+   First piece of the reduced-motion handling that phase 6 builds on. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
   background: linear-gradient(
     135deg,

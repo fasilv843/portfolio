@@ -15,16 +15,6 @@ export default function Navbar() {
   // Brand only hides behind the hero, which only exists on the home page.
   const hideBrand = isHome && heroInView;
 
-  // Smooth scroll behavior for in-page links
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const root = document.documentElement;
-    root.style.scrollBehavior = "smooth";
-    return () => {
-      root.style.scrollBehavior = "auto";
-    };
-  }, []);
-
   // Scrollspy + hero visibility (home page only)
   useEffect(() => {
     if (typeof window === "undefined" || pathname !== "/") return;
