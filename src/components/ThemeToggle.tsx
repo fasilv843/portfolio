@@ -24,8 +24,13 @@ export default function ThemeToggle({
       // Static label: the active theme genuinely is not known at render time.
       aria-label="Toggle theme"
       title="Toggle theme"
-      className={`border-border-interactive text-foreground hover:bg-surface-raised focus-visible:outline-ring inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
+      className={`group border-border-interactive text-foreground hover:bg-surface-raised focus-visible:outline-ring inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 ${className}`}
     >
+      {/* The icon swap itself stays a display swap rather than an animated
+          cross-fade: ThemeProvider runs with disableTransitionOnChange, which
+          suppresses every transition for the frame in which the theme flips, so
+          a "morph" on the swap would be classes that never fire. The rotation
+          below is on hover, which is unaffected. */}
       {/* Moon: shown in light mode — activating switches to dark. */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +40,7 @@ export default function ThemeToggle({
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="h-4.5 w-4.5 dark:hidden"
+        className="ease-out-quart h-4.5 w-4.5 transition-transform duration-200 group-hover:-rotate-12 dark:hidden"
         aria-hidden="true"
       >
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -49,7 +54,7 @@ export default function ThemeToggle({
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="hidden h-4.5 w-4.5 dark:block"
+        className="ease-out-quart hidden h-4.5 w-4.5 transition-transform duration-200 group-hover:rotate-45 dark:block"
         aria-hidden="true"
       >
         <circle cx="12" cy="12" r="4" />
