@@ -1,97 +1,256 @@
 @import "tailwindcss";
 
-/* Defaults mirror the "cyan" theme below, so the first paint already matches —
-   ThemeProvider only sets data-theme after hydration. */
+/* Tailwind v4 auto-detects sources across the project, which includes markdown.
+   REWRITE_PLAN.md names utility classes in prose (e.g. "text-green-300") and
+   Tailwind was generating real rules for them. Docs are not a class source. */
+@source not "../../**/*.md";
+
+/* Tailwind cannot infer a dark variant from a data attribute, so bind it here.
+   Used for the theme-toggle icon swap; the colour tokens swap themselves. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ---------------------------------------------------------------------------
+   Semantic colour tokens. Every pair below was checked against WCAG AA before
+   being written down; the hex in each comment is the value that was verified.
+   Worst cases: light --primary as text 4.90:1, light --foreground-faint 4.72:1.
+
+   --border is deliberately below 3:1. WCAG 1.4.11 applies to controls whose
+   boundary is the only way to identify them, not to decorative card edges, so
+   interactive outlines use --border-interactive (verified >= 3:1) instead.
+--------------------------------------------------------------------------- */
+
+/* Light is the base. */
 :root {
-  --background: #0a0b0f; /* deep charcoal / night */
-  --foreground: #e6e6ea; /* soft light grey */
-  --primary: #00ffd1;    /* neon cyan/teal */
-  --primary-dark: #00c6a2; /* deeper cyan */
-  --accent: #7c3aed;     /* secondary accent purple for small highlights */
-  --muted: #12131a;      /* panels */
-  --border: #2a2c36;     /* subtle border */
+  --background: oklch(99.1% 0.0013 286.4); /* #fcfcfd */
+  --surface: oklch(100% 0 89.9); /* #ffffff */
+  --surface-raised: oklch(97.6% 0.0029 264.5); /* #f6f7f9 */
+  --surface-sunken: oklch(96.1% 0.0041 271.4); /* #f1f2f5 */
+  --foreground: oklch(17.7% 0.0089 264.3); /* #0f1115 */
+  --foreground-muted: oklch(42.7% 0.0193 266.1); /* #4a4f5a */
+  --foreground-faint: oklch(55.1% 0.0234 264.4); /* #6b7280 */
+  --border: oklch(89.2% 0.0085 271.3); /* #d9dbe1 */
+  --border-strong: oklch(78.2% 0.0148 268.5); /* #b4b8c2 */
+  --border-interactive: oklch(60.6% 0.0177 266.2); /* #7d828d */
+  --primary: oklch(53% 0.0923 182.1); /* #0d7d70 */
+  --primary-strong: oklch(45.3% 0.0785 181.7); /* #0a6459 */
+  --primary-contrast: oklch(100% 0 89.9); /* #ffffff */
+  --ring: oklch(53% 0.0923 182.1); /* #0d7d70 */
 }
 
-/* Explicit theme tokens on the html[data-theme] root for user customization */
-html[data-theme="peacock"] {
-  --background: #0b1513;
-  --foreground: #e9f7f1;
-  --primary: #0f766e;
-  --primary-dark: #115e59;
-  --accent: #064e3b;
-  --muted: #0e2723;
-  --border: #1f8a80;
+/* Pre-hydration and no-JS system preference. The :not() guard means an explicit
+   light choice still wins on a dark-OS machine. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: oklch(15% 0.0088 274.3); /* #0a0b0f */
+    --surface: oklch(18.8% 0.0123 277.7); /* #121319 */
+    --surface-raised: oklch(22.4% 0.0137 278.8); /* #1a1b22 */
+    --surface-sunken: oklch(13.5% 0.0072 269); /* #07080b */
+    --foreground: oklch(92.6% 0.0054 286.3); /* #e6e6ea */
+    --foreground-muted: oklch(73.4% 0.0114 286.1); /* #a8a8b0 */
+    --foreground-faint: oklch(62.3% 0.0134 286); /* #86868f */
+    --border: oklch(29.5% 0.0184 276.3); /* #2a2c36 */
+    --border-strong: oklch(37.3% 0.0209 274.3); /* #3d404c */
+    --border-interactive: oklch(52.5% 0.021 272.1); /* #666a77 */
+    --primary: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
+    --primary-strong: oklch(90.7% 0.1425 177.3); /* #5cffdf */
+    --primary-contrast: oklch(22.8% 0.0367 176.7); /* #05221c */
+    --ring: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
+  }
 }
 
-html[data-theme="violet"] {
-  --background: #110b16; /* deep eggplant */
-  --foreground: #efe9f7; /* soft lavender white */
-  --primary: #6d28d9;    /* deep violet */
-  --primary-dark: #5b21b6; /* darker violet */
-  --accent: #3b0764;     /* plum accent */
-  --muted: #1a1024;      /* muted panels */
-  --border: #7c3aed;     /* violet border */
-}
-
-
-html[data-theme="cyan"] {
-  --background: #0a0b0f;
-  --foreground: #e6e6ea;
-  --primary: #00ffd1;
-  --primary-dark: #00c6a2;
-  --accent: #7c3aed;
-  --muted: #12131a;
-  --border: #2a2c36;
+/* An explicit choice always wins. */
+[data-theme="dark"] {
+  --background: oklch(15% 0.0088 274.3); /* #0a0b0f */
+  --surface: oklch(18.8% 0.0123 277.7); /* #121319 */
+  --surface-raised: oklch(22.4% 0.0137 278.8); /* #1a1b22 */
+  --surface-sunken: oklch(13.5% 0.0072 269); /* #07080b */
+  --foreground: oklch(92.6% 0.0054 286.3); /* #e6e6ea */
+  --foreground-muted: oklch(73.4% 0.0114 286.1); /* #a8a8b0 */
+  --foreground-faint: oklch(62.3% 0.0134 286); /* #86868f */
+  --border: oklch(29.5% 0.0184 276.3); /* #2a2c36 */
+  --border-strong: oklch(37.3% 0.0209 274.3); /* #3d404c */
+  --border-interactive: oklch(52.5% 0.021 272.1); /* #666a77 */
+  --primary: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
+  --primary-strong: oklch(90.7% 0.1425 177.3); /* #5cffdf */
+  --primary-contrast: oklch(22.8% 0.0367 176.7); /* #05221c */
+  --ring: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
   --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-dark: var(--primary-dark);
-  --color-accent: var(--accent);
-  --color-muted: var(--muted);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-faint: var(--foreground-faint);
   --color-border: var(--border);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-border-strong: var(--border-strong);
+  --color-border-interactive: var(--border-interactive);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-contrast: var(--primary-contrast);
+  --color-ring: var(--ring);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-instrument);
+}
+
+/* Motion tokens. Not `inline` — these are literal values, not var() aliases.
+   Ported from the old tailwind.config.ts, which Tailwind v4 never read. */
+@theme {
+  /* Motion easings. v4 has an --ease-* namespace, so these generate `ease-*`
+     utilities directly. There is no --duration-* namespace: durations use
+     Tailwind's built-ins, standardised as 150 fast / 200 base / 400 slow. */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Fluid display scale. Inter is a body face: neutral by design, so it reads
+     as UI chrome at 90px. These sizes are for --font-display only. */
+  --text-display: clamp(2.75rem, 1.2rem + 6.4vw, 6rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.02em;
+
+  --text-title: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+  --text-title--line-height: 1.05;
+  --text-title--letter-spacing: -0.015em;
+
+  --text-lead: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  --text-lead--line-height: 1.5;
+}
+
+/* The --animate-fade-in / --animate-slide-up tokens ported in 2.3 lived here.
+   `slide-up` was byte-for-byte the `reveal-rise` keyframe defined further down,
+   and neither utility was ever used. Consolidated rather than shipping the same
+   keyframe twice: reveal-rise is a plain top-level keyframe, so it is not
+   subject to v4's tree-shaking of unused theme values — which is why the
+   originals never reached the bundle in the first place. */
+
+/* Smooth scroll is the opt-in, so the accessible behaviour is the default.
+   First piece of the reduced-motion handling that phase 6 builds on. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion. This lands before any animation, not after.
+
+   The blanket rule alone is a trap: anything that starts at opacity 0 and
+   relies on an animation to become visible stays invisible when that animation
+   is neutralised. So every animated element is also explicitly reset to its
+   final state below, rather than being left to the near-zero duration.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-reveal],
+  [data-reveal-group] > *,
+  [data-animate] {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll reveal, driven entirely by the scroll timeline — no JS, no observer.
+
+   @supports is what makes this safe: browsers without scroll-driven animations
+   simply render the content statically. An IntersectionObserver fallback would
+   need a client component and would reintroduce the flash-of-hidden-content
+   problem for what is a purely decorative effect.
+--------------------------------------------------------------------------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal],
+    [data-reveal-group] > * {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 22%;
+    }
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Scroll progress bar. Also scroll-driven, so it costs no JS and no scroll
+   handler; where scroll timelines are unsupported it simply stays at zero
+   width, which is why it is aria-hidden and purely decorative. */
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    transform-origin: 0 50%;
+    animation: scroll-progress linear;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes scroll-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* First-paint hero entrance. Not scroll-driven — it runs once, above the fold.
+   `backwards` holds the from-state through the stagger delay so the elements
+   do not flash in before their turn. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-animate] {
+    animation: reveal-rise 0.6s var(--ease-out-quart) backwards;
+  }
 }
 
 body {
-  background: linear-gradient(135deg, color-mix(in oklab, var(--background) 92%, black) 0%, var(--background) 60%, color-mix(in oklab, var(--background), black 10%) 100%);
+  /* Flat, not the old 135deg gradient: in an editorial layout the ground stays
+     quiet and the type carries the page. */
+  background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans, Arial), Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   min-height: 100vh;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar. Firefox honours the standard properties; WebKit needs its
+   own pseudo-elements. Both are token-driven, so they follow the theme. */
+html {
+  scrollbar-color: var(--primary) var(--surface-sunken);
+  scrollbar-width: thin;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: color-mix(in oklab, var(--background), black 10%);
+  background: var(--surface-sunken);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+  background: linear-gradient(180deg, var(--primary), var(--primary-strong));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--primary-dark), color-mix(in oklab, var(--primary-dark), black 10%));
+  background: var(--primary-strong);
 }
 
-/* Gradient text utility */
-.gradient-text {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Gradient border utility */
-.gradient-border {
-  border: 2px solid transparent;
-  background: linear-gradient(135deg, color-mix(in oklab, var(--background), black 5%), color-mix(in oklab, var(--background), black 15%)) padding-box,
-              linear-gradient(135deg, var(--primary), var(--primary-dark)) border-box;
-}
+/* .gradient-text and .gradient-border lived here. Both are gone: the editorial
+   direction uses one accent sparingly and hairline rules instead of decorated
+   edges, so nothing referenced them any more. */

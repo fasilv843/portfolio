@@ -1,0 +1,7 @@
+.next
+node_modules
+public
+package-lock.json
+
+# Hand-maintained working doc — prettier re-flows its nested checklists badly
+REWRITE_PLAN.md

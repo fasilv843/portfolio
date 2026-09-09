@@ -1,27 +1,30 @@
-import Link from 'next/link';
+import Button from "@/components/Button";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Project Not Found",
+  description: "The project you're looking for doesn't exist or has moved.",
+  robots: { index: false, follow: true },
+};
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-4">
+    <main
+      id="main"
+      className="flex min-h-screen items-center justify-center px-4"
+    >
       <div className="text-center">
-        <h1 className="text-6xl font-bold gradient-text mb-4">404</h1>
-        <h2 className="text-2xl font-semibold text-green-300 mb-4">Project Not Found</h2>
-        <p className="text-gray-300 mb-8 max-w-md">
-          The project you&apos;re looking for doesn&apos;t exist or may have been moved.
+        <p className="text-primary font-mono text-xs tracking-[0.2em]">404</p>
+        <h1 className="font-display text-title text-foreground mt-4">
+          Project Not Found
+        </h1>
+        <p className="text-foreground-muted mx-auto mt-4 mb-10 max-w-md text-pretty">
+          The project you&apos;re looking for doesn&apos;t exist or may have
+          been moved.
         </p>
-        <div className="space-x-4">
-          <Link 
-            href="/projects"
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-lime-500 text-white rounded-lg hover:from-green-600 hover:to-lime-600 transition-all duration-300"
-          >
-            View All Projects
-          </Link>
-          <Link 
-            href="/"
-            className="inline-flex items-center px-6 py-3 border-2 border-green-500 text-green-400 rounded-lg hover:bg-green-500 hover:text-white transition-all duration-300"
-          >
-            Back to Home
-          </Link>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Button href="/projects" label="View All Projects" />
+          <Button href="/" label="Back to Home" color="outline" />
         </div>
       </div>
     </main>

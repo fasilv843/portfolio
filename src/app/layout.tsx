@@ -1,28 +1,69 @@
-import type { Metadata } from "next";
-import { Geist_Mono, Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/Navbar";
-import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import {
+  AUTHOR,
+  ROLE,
+  SITE_NAME,
+  SITE_URL,
+  SOCIAL_LINKS,
+  TWITTER_HANDLE,
+  url,
+} from "@/lib/site";
 
 const inter = Inter({
-  variable: "--font-sans",
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Display face — headings only. Inter keeps every paragraph, label and control.
+// Single weight, latin subset, so this adds one small file to first paint.
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument",
+  weight: "400",
   subsets: ["latin"],
+  display: "swap",
 });
+
+// Browser chrome follows the active theme. Values match --background in each.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fcfcfd" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0b0f" },
+  ],
+  colorScheme: "light dark",
+};
+
+const DESCRIPTION =
+  "Portfolio of Fasil Valiyattil, a full-stack developer building fintech and web products with Angular, React, Node.js, NestJS, MongoDB and AWS.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.fasilv.in"),
-  title: "Fasil Valiyattil",
-  description: "Personal portfolio of Fasil Valiyattil, a passionate full-stack developer specializing in modern web technologies and creating exceptional digital experiences.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${AUTHOR} — ${ROLE}`,
+    template: `%s | ${AUTHOR}`,
+  },
+  description: DESCRIPTION,
   keywords: [
-    "portfolio", "developer", "fava", "valiyattil", "vengara", "Muhammed Fasil V", "fasil",
-    "full-stack developer", "fintech developer", "Angular developer", "React developer",
-    "Node.js developer"
+    "portfolio",
+    "developer",
+    "fava",
+    "valiyattil",
+    "vengara",
+    "Muhammed Fasil V",
+    "fasil",
+    "full-stack developer",
+    "fintech developer",
+    "Angular developer",
+    "React developer",
+    "Node.js developer",
   ],
   authors: [{ name: "Fasil Valiyattil" }],
   alternates: {
@@ -33,27 +74,77 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png", // for iOS home screen
   },
+  manifest: "/site.webmanifest",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
-    title: "Fasil Valiyattil Portfolio",
-    description: "Personal portfolio showcasing modern web development projects and skills",
+    title: `${AUTHOR} — ${ROLE}`,
+    description: DESCRIPTION,
+    url: url("/"),
+    siteName: SITE_NAME,
+    locale: "en_US",
     type: "website",
-    images: [
-      {
-        url: "https://www.fasilv.in/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "Fasil Valiyattil Portfolio"
-      }
-    ]
+    // Images come from opengraph-image.tsx. The previous inline entry pointed at
+    // logo.png while declaring it 1200x630 — it is actually 831x814.
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fasil Valiyattil Portfolio",
-    description: "Showcasing web development projects, skills, and experience.",
-    site: "@fasilv843",
-    images: ["https://www.fasilv.in/logo.png"]
-  }
+    title: `${AUTHOR} — ${ROLE}`,
+    description: DESCRIPTION,
+    site: TWITTER_HANDLE,
+    creator: TWITTER_HANDLE,
+  },
 };
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${SITE_URL}/#person`,
+    name: AUTHOR,
+    url: url("/"),
+    jobTitle: ROLE,
+    description:
+      "Fasil Valiyattil is a Full-Stack Developer specializing in Angular, React, Node.js and Express, with experience building fintech products, showcasing personal projects and technical blogs.",
+    image: url("/logo.png"),
+    worksFor: { "@type": "Organization", name: "Paywint" },
+    knowsAbout: [
+      "Angular",
+      "React",
+      "Node.js",
+      "NestJS",
+      "Express",
+      "TypeScript",
+      "MongoDB",
+      "PostgreSQL",
+      "Redis",
+      "Docker",
+      "AWS",
+      "Terraform",
+      "Fintech",
+    ],
+    sameAs: SOCIAL_LINKS,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    name: SITE_NAME,
+    url: url("/"),
+    description: DESCRIPTION,
+    inLanguage: "en-US",
+    publisher: { "@id": `${SITE_URL}/#person` },
+  },
+];
 
 export default function RootLayout({
   children,
@@ -61,35 +152,40 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} ${geistMono.variable} antialiased`}>
-        <Script
-          id="structured-data"
+    // The font variables live on <html> so that :root actually defines them —
+    // `@theme` in globals.css consumes them there.
+    // suppressHydrationWarning: next-themes stamps data-theme before React
+    // hydrates, so the server and client markup necessarily differ here.
+    <html
+      lang="en"
+      className={`${inter.variable} ${instrumentSerif.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="antialiased">
+        {/* Plain script, not next/script: this is static data, so it belongs in
+            the server output where crawlers reliably parse it. It previously
+            shipped with strategy="afterInteractive". */}
+        <script
           type="application/ld+json"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Person",
-              "name": "Fasil Valiyattil",
-              "url": "https://www.fasilv.in",
-              "jobTitle": "Full-Stack Developer",
-              "description": "Fasil Valiyattil is a Full-Stack Developer specializing in Angular, React, Node.js and Express, with experience building fintech products, showcasing personal projects and technical blogs.",
-              "image": "https://www.fasilv.in/logo.png",
-              "sameAs": [
-                "https://github.com/fasilv843",
-                "https://linkedin.com/in/fasilv843",
-                "https://www.instagram.com/fa_sil_v/",
-                "https://x.com/fasilv843",
-                "https://www.facebook.com/fasilv843"
-              ]
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <ThemeProvider>
+        <a
+          href="#main"
+          className="bg-primary text-primary-contrast focus-visible:outline-ring sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-100 focus:rounded-md focus:px-4 focus:py-2 focus-visible:outline-2 focus-visible:outline-offset-2"
+        >
+          Skip to content
+        </a>
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <Navbar />
           {children}
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

@@ -1,56 +1,116 @@
-"use client";
-
 import Image from "next/image";
+import Link from "next/link";
 import { Project } from "@/data/projects";
-import Button from "./Button";
+import Tag from "./ui/Tag";
+import { GitHubIcon, GlobeIcon } from "./ui/icons";
+
+// No "use client" — this has no state, no handlers and no hooks. It was only a
+// client component because it imported Button, which used to carry the directive.
 
 type ProjectCardProps = {
   project: Project;
+  /**
+   * On the home page these cards sit under the "Featured Projects" h2, so h3 is
+   * right. On /projects they sit directly under the h1 with no h2 between, and
+   * hardcoding h3 there skipped a level.
+   */
+  headingLevel?: "h2" | "h3";
 };
 
-export default function ProjectCard({ project }: ProjectCardProps) {
+export default function ProjectCard({
+  project,
+  headingLevel: Heading = "h3",
+}: ProjectCardProps) {
   const hasImage = Boolean(project.image);
 
   return (
-    <div className="rounded-xl p-6 border gradient-border transition-all duration-300 group flex flex-col">
-      <div className="w-full h-48 rounded-lg mb-4 overflow-hidden border border-[var(--border)]/60 bg-[color-mix(in_oklab,var(--muted),black_10%)]">
+    <article className="border-border bg-surface hover:border-border-strong group relative flex flex-col rounded-lg border transition duration-200">
+      <div className="border-border bg-surface-sunken h-52 w-full overflow-hidden rounded-t-lg border-b">
         {hasImage ? (
-          <div className="relative w-full h-full group-hover:scale-105 transition-transform duration-300">
-            <Image src={project.image as string} alt={project.name} fill className="object-cover" />
+          <div className="relative h-full w-full">
+            <Image
+              src={project.image as string}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 32rem, 100vw"
+              className="object-cover transition-transform duration-200 group-hover:scale-[1.03]"
+            />
           </div>
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-4xl">🚀</span>
+          // No screenshots exist yet — every `image:` in projects.ts is
+          // commented out. Placeholder stays type-based rather than an emoji.
+          <div
+            className="text-foreground-faint font-display flex h-full w-full items-center justify-center text-5xl"
+            aria-hidden="true"
+          >
+            {project.name.charAt(0)}
           </div>
         )}
       </div>
 
-      <h3 className="text-xl font-semibold text-foreground mb-2">{project.name}</h3>
-      <p className="text-sm text-foreground/70 mb-3">{project.subheading}</p>
-      <p className="text-foreground/80 text-sm mb-4 line-clamp-3">{project.description}</p>
+      <div className="flex flex-1 flex-col p-6">
+        <Heading className="font-display text-foreground text-2xl">
+          {/* Stretched link: the whole card is the target, but only the title
+              is in the tab order, so keyboard users get one stop, not three. */}
+          <Link
+            href={`/projects/${project.id}`}
+            className="focus-visible:outline-ring rounded-sm before:absolute before:inset-0 focus-visible:outline-2 focus-visible:outline-offset-4"
+          >
+            {project.name}
+          </Link>
+        </Heading>
+        <p className="text-foreground-faint mt-1 font-mono text-xs tracking-wide">
+          {project.subheading}
+        </p>
+        <p className="text-foreground-muted mt-4 line-clamp-3 text-sm text-pretty">
+          {project.description}
+        </p>
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        {project.technologies.slice(0, 3).map((tech) => (
-          <span key={tech} className="px-2 py-1 bg-[color-mix(in_oklab,var(--background),white_6%)] text-foreground/80 text-xs rounded border border-border/30">
-            {tech}
-          </span>
-        ))}
-      </div>
+        {/* mb-6 is the floor for the gap under the chips: the link row below
+            uses mt-auto to keep footers aligned across the grid, and that
+            collapses to zero on a card whose content already fills it, putting
+            the divider flush against the tags. */}
+        <div className="mt-5 mb-6 flex flex-wrap gap-2">
+          {project.technologies.slice(0, 4).map((tech) => (
+            <Tag key={tech}>{tech}</Tag>
+          ))}
+        </div>
 
-      <div className="mt-auto">
-        <Button
-          href={`/projects/${project.id}`}
-          label="View Project"
-          iconPosition="right"
-          icon={(
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          )}
-        />
+        {(project.liveLink || project.sourceCode) && (
+          // Surfaced on the card itself (5.7). z-10 lifts these above the
+          // stretched title link so they stay independently clickable.
+          <div className="border-border relative z-10 mt-auto flex gap-5 border-t pt-5">
+            {project.liveLink && (
+              <a
+                href={project.liveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary focus-visible:outline-ring inline-flex items-center gap-2 text-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                <GlobeIcon />
+                <span>
+                  Live site
+                  <span className="sr-only"> for {project.name}</span>
+                </span>
+              </a>
+            )}
+            {project.sourceCode && (
+              <a
+                href={project.sourceCode}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-foreground-muted hover:text-foreground focus-visible:outline-ring inline-flex items-center gap-2 text-sm underline-offset-4 transition hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+              >
+                <GitHubIcon />
+                <span>
+                  Source
+                  <span className="sr-only"> for {project.name}</span>
+                </span>
+              </a>
+            )}
+          </div>
+        )}
       </div>
-    </div>
+    </article>
   );
 }
-
-

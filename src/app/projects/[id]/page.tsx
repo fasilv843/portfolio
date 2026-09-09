@@ -1,215 +1,233 @@
-import { projects } from '@/data/projects';
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
-import Button from '@/components/Button';
-import { Metadata } from 'next';
+import { projects } from "@/data/projects";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import Button from "@/components/Button";
+import Footer from "@/components/Footer";
+import Tag from "@/components/ui/Tag";
+import { GitHubIcon, GlobeIcon } from "@/components/ui/icons";
+import { Metadata } from "next";
+import { AUTHOR, SITE_NAME, TWITTER_HANDLE, truncate, url } from "@/lib/site";
 
-export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProjectPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  const project = projects.find(p => p.id === id);
+  const project = projects.find((p) => p.id === id);
 
   if (!project) {
     notFound();
   }
 
+  // Server-rendered so crawlers see it in the initial HTML.
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: url("/") },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Projects",
+          item: url("/projects"),
+        },
+        { "@type": "ListItem", position: 3, name: project.name },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: project.name,
+      description: project.description,
+      url: url(`/projects/${project.id}`),
+      applicationCategory: "WebApplication",
+      operatingSystem: "Web browser",
+      author: { "@type": "Person", name: AUTHOR, url: url("/") },
+      ...(project.liveLink && { installUrl: project.liveLink }),
+      ...(project.sourceCode && { codeRepository: project.sourceCode }),
+      keywords: project.technologies.join(", "),
+      isPartOf: { "@type": "WebSite", name: SITE_NAME, url: url("/") },
+    },
+  ];
+
   return (
-    <main className="min-h-screen">
-      {/* Hero image with overlay */}
-      <section className="relative w-full">
-        {project.image ? (
-          <div className="relative w-full h-[60vh] md:h-[65vh] lg:h-[75vh]">
-            <Image src={project.image} alt={project.name} fill priority className="object-cover" />
-            <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.45),transparent_40%)]" />
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full max-w-6xl mx-auto px-4">
-                <div className="inline-block w-full max-w-3xl bg-[rgba(0,0,0,0.38)] rounded-xl p-4 md:p-6">
-                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold">{project.name}</h1>
-                  <p className="mt-2 text-base md:text-xl lg:text-2xl text-foreground/90">{project.subheading}</p>
-  
-                  <div className="mt-4 md:mt-6 flex flex-wrap gap-3">
-                    {project.liveLink && (
-                      <Button
-                        href={project.liveLink}
-                        label="Live Demo"
-                        icon={(
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4.5 h-4.5">
-                            <circle cx="12" cy="12" r="9" />
-                            <path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" />
-                          </svg>
-                        )}
-                      />
-                    )}
-                    {project.sourceCode && (
-                      <Button
-                        href={project.sourceCode}
-                        label="Source Code"
-                        color="outline"
-                        icon={(
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                            <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.7.5.09.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.2-3.37-1.2-.46-1.2-1.12-1.52-1.12-1.52-.92-.64.07-.63.07-.63 1.02.07 1.55 1.07 1.55 1.07.9 1.58 2.36 1.12 2.94.86.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.27 2.75 1.05.8-.23 1.65-.35 2.5-.35.85 0 1.7.12 2.5.35 1.9-1.32 2.74-1.05 2.74-1.05.55 1.4.2 2.44.1 2.7.64.72 1.02 1.63 1.02 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.67.94.67 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.58.69.48A10.03 10.03 0 0 0 22 12.26C22 6.58 17.52 2 12 2z" />
-                          </svg>
-                        )}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="w-full max-w-6xl mx-auto px-4 pt-16 pb-8">
-            <h1 className="text-4xl md:text-6xl font-bold">{project.name}</h1>
-            <p className="mt-2 text-lg md:text-2xl text-foreground/80 max-w-3xl">{project.subheading}</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              {project.liveLink && (
-                <Link href={project.liveLink} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-[var(--primary)] text-black rounded-lg hover:brightness-110 transition-all">
-                  Live Demo
-                </Link>
-              )}
-              {project.sourceCode && (
-                <Link href={project.sourceCode} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 border border-[var(--border)] text-foreground rounded-lg hover:bg-[var(--muted)] transition-all">
-                  Source Code
-                </Link>
-              )}
-            </div>
+    <main id="main" className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="mx-auto w-full max-w-5xl px-6 pt-24 pb-16 md:pt-32">
+        <nav aria-label="Breadcrumb">
+          <Link
+            href="/projects"
+            className="text-foreground-faint hover:text-foreground focus-visible:outline-ring font-mono text-xs tracking-[0.15em] uppercase transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-4"
+          >
+            <span aria-hidden="true">← </span>All Projects
+          </Link>
+        </nav>
+
+        <h1 className="font-display text-display text-foreground mt-8 text-balance">
+          {project.name}
+        </h1>
+        <p className="text-foreground-muted text-lead mt-4 max-w-[68ch] text-pretty">
+          {project.subheading}
+        </p>
+
+        {project.image && (
+          <div className="border-border relative mt-14 aspect-[16/9] w-full overflow-hidden rounded-lg border">
+            <Image
+              src={project.image}
+              alt=""
+              fill
+              priority
+              sizes="(min-width: 1024px) 64rem, 100vw"
+              className="object-cover"
+            />
           </div>
         )}
-      </section>
+      </div>
 
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-12">
-          {/* Main content */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="rounded-2xl p-8 border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)]">
-              <h2 className="text-2xl font-semibold mb-4">Project Overview</h2>
-              <p className="text-lg text-foreground/80 leading-relaxed">{project.description}</p>
-            </div>
+      <div className="mx-auto grid w-full max-w-5xl gap-14 px-6 pb-28 lg:grid-cols-3">
+        <div className="space-y-16 lg:col-span-2">
+          <section>
+            <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
+              Project Overview
+            </h2>
+            <p className="text-foreground-muted mt-6 text-lg leading-relaxed text-pretty">
+              {project.description}
+            </p>
+          </section>
 
-            {project.features?.length > 0 && (
-              <div className="rounded-2xl p-8 border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)]">
-                <h2 className="text-2xl font-semibold mb-6">Key Features</h2>
-                <ul className="space-y-4">
-                  {project.features.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <div className="mt-1 w-2.5 h-2.5 rounded-full bg-[var(--primary)] flex-shrink-0" />
-                      <span className="text-foreground/80">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {project.demoUrl && (
-              <div className="rounded-2xl p-8 border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)]">
-                <h2 className="text-2xl font-semibold mb-6">Project Demo</h2>
-                <div className="relative w-full h-0 pb-[56.25%] rounded-lg overflow-hidden">
-                  <iframe
-                    src={project.demoUrl}
-                    title={`${project.name} Demo`}
-                    className="absolute top-0 left-0 w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar */}
-          <aside className="space-y-8">
-            <div className="rounded-2xl p-6 border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)]">
-              <h3 className="text-xl font-semibold mb-4">Technologies Used</h3>
-              <div className="space-y-3">
-                {project.technologies.map((tech) => (
-                  <div key={tech} className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-[var(--primary)]"></div>
-                    <span className="text-foreground/80">{tech}</span>
-                  </div>
+          {project.features?.length > 0 && (
+            <section>
+              <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
+                Key Features
+              </h2>
+              {/* Two columns: CineSnap has 14 of these and a single column read
+                  as an endless list. Real semantic grouping needs the data to
+                  carry categories — that is phase 7, not a layout fix. */}
+              <ul className="mt-6 grid gap-x-10 sm:grid-cols-2">
+                {project.features.map((feature) => (
+                  <li
+                    key={feature}
+                    className="text-foreground-muted border-border flex gap-3 border-b py-3 text-sm text-pretty"
+                  >
+                    <span className="text-primary shrink-0" aria-hidden="true">
+                      —
+                    </span>
+                    {feature}
+                  </li>
                 ))}
+              </ul>
+            </section>
+          )}
+
+          {project.demoUrl && (
+            <section>
+              <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
+                Project Demo
+              </h2>
+              <div className="border-border mt-6 aspect-video w-full overflow-hidden rounded-lg border">
+                <iframe
+                  src={project.demoUrl}
+                  title={`${project.name} Demo`}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
               </div>
+            </section>
+          )}
+        </div>
+
+        {/* One sidebar, not two copies of the same buttons. Sticky so the
+            actions stay reachable through a long feature list. */}
+        <aside className="lg:sticky lg:top-24 lg:self-start">
+          <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
+            Built with
+          </h2>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {project.technologies.map((tech) => (
+              <li key={tech}>
+                <Tag>{tech}</Tag>
+              </li>
+            ))}
+          </ul>
+
+          {(project.liveLink || project.sourceCode) && (
+            <div className="mt-10 flex flex-col gap-3">
+              {project.liveLink && (
+                <Button
+                  href={project.liveLink}
+                  label="View live site"
+                  icon={<GlobeIcon />}
+                  className="w-full"
+                />
+              )}
+              {project.sourceCode && (
+                <Button
+                  href={project.sourceCode}
+                  label="View source"
+                  icon={<GitHubIcon />}
+                  color="outline"
+                  className="w-full"
+                />
+              )}
             </div>
+          )}
+        </aside>
+      </div>
 
-            {/* Action Buttons (duplicated for sidebar quick access) */}
-            {(project.liveLink || project.sourceCode) && (
-              <div className="rounded-2xl p-6 border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)] space-y-3">
-                {project.liveLink && (
-                  <Link href={project.liveLink} target="_blank" rel="noopener noreferrer" className="w-full inline-flex justify-center px-6 py-3 bg-[var(--primary)] text-black rounded-lg hover:brightness-110 transition-all">
-                    View Live Demo
-                  </Link>
-                )}
-                {project.sourceCode && (
-                  <Link href={project.sourceCode} target="_blank" rel="noopener noreferrer" className="w-full inline-flex justify-center px-6 py-3 border border-[var(--border)] text-foreground rounded-lg hover:bg-[var(--muted)] transition-all">
-                    View Source Code
-                  </Link>
-                )}
-              </div>
-            )}
-          </aside>
-        </div>
-
-        {/* Navigation */}
-        <div className="mt-16 flex justify-between max-w-6xl mx-auto">
-          <Link 
-            href="/projects"
-            className="inline-flex items-center px-6 py-3 border border-[var(--border)] text-foreground rounded-lg hover:bg-[var(--muted)] transition-all"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            All Projects
-          </Link>
-          
-          <Link 
-            href="/"
-            className="inline-flex items-center px-6 py-3 border border-[var(--border)] text-foreground rounded-lg hover:bg-[var(--muted)] transition-all"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            Back to Home
-          </Link>
-        </div>
-      </section>
+      <Footer />
     </main>
   );
 }
 
 // Dynamic metadata
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
   const { id } = await params;
-  const project = projects.find(p => p.id === id);
+  const project = projects.find((p) => p.id === id);
 
   if (!project) {
     return {
-      title: 'Project Not Found',
-      description: 'This project does not exist',
+      title: "Project Not Found",
+      description: "This project does not exist",
     };
   }
 
+  const description = truncate(project.description);
+
   return {
-    title: `${project.name} - Fasil Valiyattil`,
-    description: project.description,
+    // Root layout's template appends "| Fasil Valiyattil".
+    title: project.name,
+    description,
+    alternates: { canonical: `/projects/${project.id}` },
     openGraph: {
       title: project.name,
-      description: project.description,
-      url: `https://fasilv.in/projects/${project.id}`,
-      images: [
-        {
-          url: project.image || 'https://via.placeholder.com/1200x630.png?text=Fasil+Valiyattil+Portfolio',
-          width: 1200,
-          height: 630,
-        },
-      ],
+      description,
+      url: url(`/projects/${project.id}`),
+      type: "article",
+      // Images come from the sibling opengraph-image.tsx, which generates a real
+      // 1200x630 card. The old inline entry pointed at via.placeholder.com, a
+      // service that is now dead.
     },
     twitter: {
-      card: 'summary_large_image',
-      site: '@fasilv843',
-      creator: '@fasilv843',
+      card: "summary_large_image",
+      site: TWITTER_HANDLE,
+      creator: TWITTER_HANDLE,
     },
   };
 }
 
-// export async function generateStaticParams() {
-//   return projects.map((project) => ({ id: project.id }));
-// }
+// Prerender all five project pages. Previously commented out, which left them
+// server-rendered on demand and absent from the sitemap.
+export async function generateStaticParams() {
+  return projects.map((project) => ({ id: project.id }));
+}
