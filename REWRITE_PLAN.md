@@ -138,41 +138,63 @@ original notes claimed — see 2.1 and 2.2.
       after the classes were gone from the code. Markdown is now excluded via `@source not`. Worth
       knowing: without that fix, every class name written into this file in phases 3–6 would ship.
 
-## Phase 3 — Theme system (dark + light)
+## Phase 3 — Theme system (dark + light) ✅ done
 
-Today there is no light mode at all: three dark palettes (`cyan`, `peacock`, `violet`),
-with `ThemeProvider` hardcoded to `cyan`, no persistence, and no system-preference support.
+Uncommitted at time of writing — under review.
 
-- [ ] **3.1 Decide the model.** Recommendation: **light/dark × one accent**, not three hues.
-      A single confident accent reads as deliberate; three switchable hues read as a demo.
-      Keep the accent as a CSS variable so it can still be re-skinned in one place.
-- [ ] **3.2 Rebuild the token set** in `globals.css`, in OKLCH, with semantic names rather than
-      raw roles: `--bg`, `--bg-subtle`, `--surface`, `--surface-raised`, `--border`,
-      `--border-strong`, `--text`, `--text-muted`, `--text-faint`, `--accent`, `--accent-hover`,
-      `--accent-contrast`, `--ring`. Define light on `:root`, dark under
-      `:root[data-theme="dark"]` **and** `@media (prefers-color-scheme: dark)`.
-- [ ] **3.3 Kill the `color-mix(...)` sprawl.** `page.tsx`, `ProjectCard.tsx`,
-      `projects/[id]/page.tsx` and `Navbar.tsx` are full of inline
-      `bg-[color-mix(in_oklab,var(--background),white_6%)]` — which is also **light-mode-hostile**
-      (mixing toward white on a white background = invisible). Replace every one with a semantic
-      token from 3.2.
-- [ ] **3.4 Contrast audit.** `text-foreground/60` and `/70` on a light background will likely fail
-      WCAG AA. Check every opacity-derived text colour in both themes; prefer explicit muted
-      tokens over `/60` opacity.
-- [ ] **3.5 Fix the FOUC.** `ThemeProvider` sets `data-theme` in a `useEffect`, i.e. after
-      hydration — the first paint is always the `:root` default. Add a tiny blocking inline script
-      in `<head>` that reads `localStorage` + `matchMedia` and stamps `data-theme` before paint,
-      and put `suppressHydrationWarning` on `<html>`. (Or adopt `next-themes`, which does exactly
-      this; then delete `ThemeProvider.tsx`.)
-- [ ] **3.6 Persist the choice** to `localStorage` and honour `prefers-color-scheme` when nothing is
-      stored. The current provider deliberately ignores storage — revisit that comment.
-- [ ] **3.7 Ship a real toggle** in the navbar (sun/moon, animated, `aria-label`, keyboard
-      reachable) replacing the commented-out button. Delete `ThemeSelector.tsx` or repurpose it.
-- [ ] **3.8 Theme-aware chrome**: update `<meta name="theme-color">` per scheme (see 5.4), and the
-      `theme_color` / `background_color` in `public/site.webmanifest` (currently locked to the old
-      `#00ffd1` / `#0a0b0f`).
-- [ ] **3.9 Custom scrollbar** in `globals.css` is `::-webkit-` only. Add `scrollbar-color` /
-      `scrollbar-width` for Firefox, and verify it in light mode.
+- [x] **3.1 Model: light + dark, one accent.** The three hues are gone; `ThemeProvider.tsx` and
+      `ThemeSelector.tsx` are deleted and `next-themes` (installed in phase 1) drives everything.
+- [x] **3.2 Token set rebuilt in OKLCH**, but with **different names than proposed here**. The plan
+      suggested `--bg` / `--text` / `--text-muted`; the implementation kept
+      `--background` / `--foreground` / `--foreground-muted` / `--primary` / `--border` because
+      (a) `text-foreground` was already used 28× and `border-border` 24×, so renaming was churn for
+      nothing, and (b) Tailwind derives utility names from tokens, so `--color-text` would have
+      produced the unreadable `text-text`.
+
+      Full set: `--background`, `--surface`, `--surface-raised`, `--surface-sunken`,
+      `--foreground`, `--foreground-muted`, `--foreground-faint`, `--border`, `--border-strong`,
+      `--border-interactive`, `--primary`, `--primary-strong`, `--primary-contrast`, `--ring`.
+
+      Cascade is `:root` (light) → `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) }`
+      → `[data-theme="dark"]`. The `:not()` guard is what makes an explicit light choice survive on
+      a dark-OS machine, and the media query is what makes the no-JS case work.
+- [x] **3.3 All 17 `color-mix()` expressions removed** (they were only 6 distinct values). Verified:
+      `color-mix` no longer appears anywhere in `src/`. Every `[var(--token)]` arbitrary class and
+      every opacity-derived colour is gone too — the components now use plain semantic utilities.
+- [x] **3.4 Contrast audited — and verified against the CSS the build actually emits**, not just the
+      authored values. That distinction mattered: Lightning CSS re-converts `oklch()` to hex itself
+      and produced e.g. `#0bffd1` where the author-time round-trip gave `#02ffd1`. **All 28 pairs
+      pass AA** on the emitted output. Tightest margins: light `--primary` as text **4.90:1**,
+      light `--foreground-faint` **4.72:1**, dark `--border-interactive` on surface **3.44:1**.
+
+      Two deliberate calls: `--border` sits at ~1.4:1 and stays there, because WCAG 1.4.11 governs
+      controls whose boundary is the only way to identify them, not decorative card edges — hence
+      the separate `--border-interactive` for real controls. And the hardcoded `text-black` on
+      primary buttons (3×) was a **latent bug**: legible only because the dark accent is near-white,
+      it would have broken outright under the light accent. Now `--primary-contrast`.
+- [x] **3.5 FOUC fixed** by `next-themes`' blocking script plus `suppressHydrationWarning` on
+      `<html>`. Verified in the served HTML: no `data-theme` baked into SSR, and the inline script
+      (`("data-theme","theme","system",null,["light","dark"],null,true,true)`) runs before `<nav>`.
+- [x] **3.6 Persistence + system preference** come from the same script — `localStorage.getItem("theme")`
+      falling back to `matchMedia("(prefers-color-scheme: dark)")`.
+- [x] **3.7 Toggle shipped** as `src/components/ThemeToggle.tsx`. Two notes:
+      it **swaps icons in CSS via a `dark:` variant** bound to the attribute with `@custom-variant`,
+      rather than the usual `mounted` state — that pattern is a synchronous `setState` in an effect,
+      exactly what `eslint-plugin-react-hooks@7` rejected in `Navbar.tsx` back in phase 1. And it is
+      mounted **outside** the `isHome` gates, because the mobile menu only renders on the home page
+      and the toggle would otherwise be unreachable on mobile everywhere else.
+      Removing the old provider also cleared the unused `toggleTheme`, so **lint is now at 0
+      warnings** (down from the 1 accepted in phase 2).
+- [x] **3.8 Theme-aware chrome.** `themeColor` now ships per scheme via a `viewport` export — which
+      also lands the `viewport` half of **4.8**; `colorScheme` is set there too. The webmanifest's
+      stale `theme_color: "#00ffd1"` is now the dark background, so the standalone splash cannot
+      flash a colour the app never shows.
+- [x] **3.9 Scrollbar** now sets `scrollbar-color` / `scrollbar-width` for Firefox alongside the
+      `::-webkit-` rules, both token-driven so they follow the theme.
+- [x] **3.10 (new) Focus rings designed.** Controls had none. Buttons, nav links and the toggle now
+      carry `focus-visible:outline-2 outline-offset-2 outline-ring`. Partially pre-empts **6.8**.
+      While in the mobile menu button, added the `aria-expanded` / `aria-controls` that **4.15**
+      asks for.
 
 ## Phase 4 — SEO corrections
 
@@ -210,8 +232,8 @@ Problems, highest impact first:
 - [ ] **4.7 Fill in the OG gaps** on the root: `siteName`, `locale: "en_US"`, `url`. Add
       `twitter.creator` (only `site` is set). Add an explicit `robots` block
       (`index, follow`, `googleBot: { "max-image-preview": "large", "max-snippet": -1 }`).
-- [ ] **4.8 Move to `export const viewport`.** `themeColor` / `colorScheme` / `width` belong in the
-      Next 15+ `viewport` export; none is currently declared anywhere.
+- [ ] **4.8 Move to `export const viewport`.** Mostly done in phase 3: the export now exists in
+      `layout.tsx` with per-scheme `themeColor` and `colorScheme`. Only `width` is still undeclared.
 - [ ] **4.9 Render JSON-LD server-side.** It currently ships via
       `<Script strategy="afterInteractive">`. A plain `<script type="application/ld+json">` in the
       server output is more reliably parsed. While there: add a `WebSite` schema, a
@@ -219,7 +241,8 @@ Problems, highest impact first:
       Consider `knowsAbout` + `alumniOf`/`worksFor` on the `Person` node.
 - [ ] **4.10 `robots.txt` emits two conflicting `User-agent: *` groups** — one `Allow: /`, one
       `Disallow: /404`. Collapse into a single group. (Moot if 4.1 replaces `next-sitemap`.)
-- [ ] **4.11 `not-found.tsx` has no metadata** — no title, and it should be `noindex`.
+- [ ] **4.11 Neither `not-found.tsx` has metadata** — no title, and both should be `noindex`.
+      Phase 3 restyled both files but deliberately left metadata alone; still outstanding.
 - [ ] **4.12 Thin descriptions.** `projects/page.tsx` ships literal ellipses:
       `"Explore the portfolio projects of Fasil Valiyattil..."`. Write real 150–160 char copy.
 - [ ] **4.13 Heading hierarchy.** The home page opens `h1` → `h2` → `h2` (the tagline "Full-Stack

@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/Navbar";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
@@ -12,6 +12,15 @@ const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
+
+// Browser chrome follows the active theme. Values match --background in each.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fcfcfd" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0b0f" },
+  ],
+  colorScheme: "light dark",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.fasilv.in"),
@@ -72,7 +81,9 @@ export default function RootLayout({
   return (
     // The font variable lives on <html> so that :root actually defines it —
     // `@theme` in globals.css consumes it there.
-    <html lang="en" className={inter.variable}>
+    // suppressHydrationWarning: next-themes stamps data-theme before React
+    // hydrates, so the server and client markup necessarily differ here.
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body className="antialiased">
         <Script
           id="structured-data"
@@ -98,7 +109,12 @@ export default function RootLayout({
             }),
           }}
         />
-        <ThemeProvider>
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <Navbar />
           {children}
         </ThemeProvider>

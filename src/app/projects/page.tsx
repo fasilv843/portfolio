@@ -23,7 +23,7 @@ export default function ProjectsPage() {
           <h1 className="gradient-text mb-4 text-5xl font-bold">
             All Projects
           </h1>
-          <p className="text-foreground/80 mx-auto max-w-2xl text-xl">
+          <p className="text-foreground-muted mx-auto max-w-2xl text-xl">
             A comprehensive showcase of my work, featuring full-stack
             applications, innovative solutions, and cutting-edge technologies.
           </p>

@@ -17,7 +17,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
           <div className="order-2 space-y-7 text-center lg:order-1 lg:text-left">
             <div>
-              <p className="text-foreground/60 pl-1 text-base italic lg:text-lg">
+              <p className="text-foreground-faint pl-1 text-base italic lg:text-lg">
                 Hey there, I&apos;m
               </p>
               <h1
@@ -27,10 +27,10 @@ export default function Home() {
                 Fasil Valiyattil
               </h1>
             </div>
-            <h2 className="text-foreground/80 text-2xl font-semibold lg:text-3xl">
+            <h2 className="text-foreground-muted text-2xl font-semibold lg:text-3xl">
               Full-Stack Developer
             </h2>
-            <p className="text-foreground/70 max-w-lg text-lg">
+            <p className="text-foreground-muted max-w-lg text-lg">
               Passionate about creating exceptional digital experiences with
               modern web technologies.
             </p>
@@ -39,7 +39,7 @@ export default function Home() {
                 href="https://linkedin.com/in/fasilv843"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transform rounded-lg bg-[var(--primary)] px-6 py-3 text-black transition-all duration-300 hover:scale-105 hover:brightness-110"
+                className="bg-primary text-primary-contrast transform rounded-lg px-6 py-3 transition-all duration-300 hover:scale-105 hover:brightness-110"
               >
                 LinkedIn
               </a>
@@ -47,14 +47,14 @@ export default function Home() {
                 href="https://github.com/fasilv843"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border-border text-foreground rounded-lg border-2 px-6 py-3 transition-all duration-300 hover:border-[var(--border)] hover:bg-[var(--muted)]"
+                className="border-border text-foreground hover:border-border hover:bg-surface-raised rounded-lg border-2 px-6 py-3 transition-all duration-300"
               >
                 GitHub
               </a>
             </div>
           </div>
           <div className="order-1 flex justify-center lg:order-2">
-            <div className="flex h-80 w-80 items-center justify-center rounded-full border border-[var(--border)] bg-[color-mix(in_oklab,var(--muted),black_10%)]">
+            <div className="border-border bg-surface-sunken flex h-80 w-80 items-center justify-center rounded-full border">
               <span className="text-6xl">👨‍💻</span>
             </div>
           </div>
@@ -66,14 +66,14 @@ export default function Home() {
         <div className="mx-auto max-w-4xl">
           <h2 className="mb-12 text-center text-4xl font-bold">About Me</h2>
           <div className="rounded-2xl p-8">
-            <p className="text-foreground/80 text-lg leading-relaxed">
+            <p className="text-foreground-muted text-lg leading-relaxed">
               I&apos;m a full-stack developer who builds reliable, scalable
               systems across the stack — Angular and React on the front end,
               Node.js on the back. Most recently I&apos;ve worked on fintech
               products, where correctness and careful handling of edge cases
               matter as much as the features themselves.
             </p>
-            <p className="text-foreground/80 mt-4 text-lg leading-relaxed">
+            <p className="text-foreground-muted mt-4 text-lg leading-relaxed">
               Beyond coding, I like diving into challenges that push me to think
               differently, explore new tools, and refine my problem-solving
               skills. Curiosity drives me to keep learning and improving as I
@@ -119,7 +119,9 @@ export default function Home() {
                           className="h-6 w-6"
                         />
                       )}
-                      <span className="text-foreground/80">{skill.name}</span>
+                      <span className="text-foreground-muted">
+                        {skill.name}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -154,42 +156,44 @@ export default function Home() {
           </h2>
           <div className="relative">
             <div
-              className="absolute top-0 bottom-0 left-4 w-px bg-[var(--border)]/60"
+              className="bg-border absolute top-0 bottom-0 left-4 w-px"
               aria-hidden
             />
             <div className="space-y-10">
               {experiences.map((exp) => (
                 <div key={exp.id} className="relative pl-14">
                   <div
-                    className="absolute top-2 left-4 h-3.5 w-3.5 -translate-x-1/2 rounded-full border border-[var(--border)] bg-[var(--primary)] shadow-[0_0_0_4px] shadow-[color-mix(in_oklab,var(--background),white_4%)]"
+                    className="border-border bg-primary shadow-surface-raised absolute top-2 left-4 h-3.5 w-3.5 -translate-x-1/2 rounded-full border shadow-[0_0_0_4px]"
                     aria-hidden
                   />
-                  <div className="rounded-2xl border border-[var(--border)]/50 bg-[color-mix(in_oklab,var(--background),white_3%)] p-6">
+                  <div className="border-border bg-surface rounded-2xl border p-6">
                     <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                       <div>
                         <div className="inline-flex items-center gap-2">
-                          <span className="text-foreground/70 rounded border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_6%)] px-2 py-0.5 text-sm">
+                          <span className="text-foreground-muted border-border bg-surface-raised rounded border px-2 py-0.5 text-sm">
                             {exp.duration}
                           </span>
-                          <span className="text-foreground/70 rounded border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_6%)] px-2 py-0.5 text-sm">
+                          <span className="text-foreground-muted border-border bg-surface-raised rounded border px-2 py-0.5 text-sm">
                             {exp.location}
                           </span>
                         </div>
                         <h3 className="text-foreground mt-2 text-xl font-semibold md:text-2xl">
                           {exp.role}
                         </h3>
-                        <p className="text-foreground/80">{exp.company}</p>
+                        <p className="text-foreground-muted">{exp.company}</p>
                       </div>
-                      {/* <div className="hidden md:block text-sm text-foreground/60 mt-1">{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</div> */}
+                      {/* <div className="hidden md:block text-sm text-foreground-faint mt-1">{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</div> */}
                     </div>
-                    <p className="text-foreground/80 mt-4">{exp.description}</p>
+                    <p className="text-foreground-muted mt-4">
+                      {exp.description}
+                    </p>
                     <div className="mt-6 grid gap-4">
                       {exp.achievements && (
                         <div>
                           <h5 className="text-foreground mb-2 text-sm font-semibold">
                             Key Achievements
                           </h5>
-                          <ul className="text-foreground/80 list-inside list-disc space-y-2">
+                          <ul className="text-foreground-muted list-inside list-disc space-y-2">
                             {exp.achievements.map((achievement, index) => (
                               <li key={index}>{achievement}</li>
                             ))}
@@ -204,21 +208,21 @@ export default function Home() {
                           {exp.projects.map((project, index) => (
                             <div
                               key={index}
-                              className="rounded-lg border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_4%)] p-3"
+                              className="border-border bg-surface rounded-lg border p-3"
                             >
                               <div className="flex items-center justify-between">
                                 <h6 className="text-foreground font-semibold">
                                   {project.name}
                                 </h6>
                               </div>
-                              <p className="text-foreground/80 mt-1 text-sm">
+                              <p className="text-foreground-muted mt-1 text-sm">
                                 {project.description}
                               </p>
                               <div className="mt-2 flex flex-wrap gap-1.5">
                                 {project.technologies.map((tech) => (
                                   <span
                                     key={tech}
-                                    className="text-foreground/80 border-border/30 rounded border bg-[color-mix(in_oklab,var(--background),white_6%)] px-2 py-0.5 text-xs"
+                                    className="text-foreground-muted border-border bg-surface-raised rounded border px-2 py-0.5 text-xs"
                                   >
                                     {tech}
                                   </span>
@@ -241,7 +245,7 @@ export default function Home() {
       <section id="contact" className="scroll-mt-20 px-4 py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="mb-6 text-4xl font-bold">Get In Touch</h2>
-          <p className="text-foreground/70 mb-10 text-lg">
+          <p className="text-foreground-muted mb-10 text-lg">
             Have a project in mind, a question, or just want to say hello?{" "}
             <br />
             I’d love to hear from you.
@@ -251,9 +255,9 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-border/30 border-t px-4 py-12">
+      <footer className="border-border border-t px-4 py-12">
         <div className="mx-auto max-w-6xl text-center">
-          <p className="text-foreground/60">
+          <p className="text-foreground-faint">
             © 2026 Fasil Valiyattil. All rights reserved. Built with Next.js and
             Tailwind CSS.
           </p>

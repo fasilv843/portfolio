@@ -13,7 +13,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <div className="gradient-border group flex flex-col rounded-xl border p-6 transition-all duration-300">
-      <div className="mb-4 h-48 w-full overflow-hidden rounded-lg border border-[var(--border)]/60 bg-[color-mix(in_oklab,var(--muted),black_10%)]">
+      <div className="border-border bg-surface-sunken mb-4 h-48 w-full overflow-hidden rounded-lg border">
         {hasImage ? (
           <div className="relative h-full w-full transition-transform duration-300 group-hover:scale-105">
             <Image
@@ -33,8 +33,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       <h3 className="text-foreground mb-2 text-xl font-semibold">
         {project.name}
       </h3>
-      <p className="text-foreground/70 mb-3 text-sm">{project.subheading}</p>
-      <p className="text-foreground/80 mb-4 line-clamp-3 text-sm">
+      <p className="text-foreground-muted mb-3 text-sm">{project.subheading}</p>
+      <p className="text-foreground-muted mb-4 line-clamp-3 text-sm">
         {project.description}
       </p>
 
@@ -42,7 +42,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         {project.technologies.slice(0, 3).map((tech) => (
           <span
             key={tech}
-            className="text-foreground/80 border-border/30 rounded border bg-[color-mix(in_oklab,var(--background),white_6%)] px-2 py-1 text-xs"
+            className="text-foreground-muted border-border bg-surface-raised rounded border px-2 py-1 text-xs"
           >
             {tech}
           </span>

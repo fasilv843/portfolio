@@ -37,7 +37,7 @@ export default async function ProjectPage({
                   <h1 className="text-3xl font-bold md:text-5xl lg:text-6xl">
                     {project.name}
                   </h1>
-                  <p className="text-foreground/90 mt-2 text-base md:text-xl lg:text-2xl">
+                  <p className="text-foreground mt-2 text-base md:text-xl lg:text-2xl">
                     {project.subheading}
                   </p>
 
@@ -86,7 +86,7 @@ export default async function ProjectPage({
         ) : (
           <div className="mx-auto w-full max-w-6xl px-4 pt-16 pb-8">
             <h1 className="text-4xl font-bold md:text-6xl">{project.name}</h1>
-            <p className="text-foreground/80 mt-2 max-w-3xl text-lg md:text-2xl">
+            <p className="text-foreground-muted mt-2 max-w-3xl text-lg md:text-2xl">
               {project.subheading}
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -95,7 +95,7 @@ export default async function ProjectPage({
                   href={project.liveLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-lg bg-[var(--primary)] px-5 py-2.5 text-black transition-all hover:brightness-110"
+                  className="bg-primary text-primary-contrast rounded-lg px-5 py-2.5 transition-all hover:brightness-110"
                 >
                   Live Demo
                 </Link>
@@ -105,7 +105,7 @@ export default async function ProjectPage({
                   href={project.sourceCode}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-foreground rounded-lg border border-[var(--border)] px-5 py-2.5 transition-all hover:bg-[var(--muted)]"
+                  className="text-foreground border-border hover:bg-surface-raised rounded-lg border px-5 py-2.5 transition-all"
                 >
                   Source Code
                 </Link>
@@ -119,21 +119,21 @@ export default async function ProjectPage({
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-3">
           {/* Main content */}
           <div className="space-y-8 lg:col-span-2">
-            <div className="rounded-2xl border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)] p-8">
+            <div className="border-border bg-surface rounded-2xl border p-8">
               <h2 className="mb-4 text-2xl font-semibold">Project Overview</h2>
-              <p className="text-foreground/80 text-lg leading-relaxed">
+              <p className="text-foreground-muted text-lg leading-relaxed">
                 {project.description}
               </p>
             </div>
 
             {project.features?.length > 0 && (
-              <div className="rounded-2xl border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)] p-8">
+              <div className="border-border bg-surface rounded-2xl border p-8">
                 <h2 className="mb-6 text-2xl font-semibold">Key Features</h2>
                 <ul className="space-y-4">
                   {project.features.map((feature, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <div className="mt-1 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-[var(--primary)]" />
-                      <span className="text-foreground/80">{feature}</span>
+                      <div className="bg-primary mt-1 h-2.5 w-2.5 flex-shrink-0 rounded-full" />
+                      <span className="text-foreground-muted">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -141,7 +141,7 @@ export default async function ProjectPage({
             )}
 
             {project.demoUrl && (
-              <div className="rounded-2xl border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)] p-8">
+              <div className="border-border bg-surface rounded-2xl border p-8">
                 <h2 className="mb-6 text-2xl font-semibold">Project Demo</h2>
                 <div className="relative h-0 w-full overflow-hidden rounded-lg pb-[56.25%]">
                   <iframe
@@ -158,13 +158,13 @@ export default async function ProjectPage({
 
           {/* Sidebar */}
           <aside className="space-y-8">
-            <div className="rounded-2xl border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)] p-6">
+            <div className="border-border bg-surface rounded-2xl border p-6">
               <h3 className="mb-4 text-xl font-semibold">Technologies Used</h3>
               <div className="space-y-3">
                 {project.technologies.map((tech) => (
                   <div key={tech} className="flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-[var(--primary)]"></div>
-                    <span className="text-foreground/80">{tech}</span>
+                    <div className="bg-primary h-2 w-2 rounded-full"></div>
+                    <span className="text-foreground-muted">{tech}</span>
                   </div>
                 ))}
               </div>
@@ -172,13 +172,13 @@ export default async function ProjectPage({
 
             {/* Action Buttons (duplicated for sidebar quick access) */}
             {(project.liveLink || project.sourceCode) && (
-              <div className="space-y-3 rounded-2xl border border-[var(--border)]/40 bg-[color-mix(in_oklab,var(--background),white_3%)] p-6">
+              <div className="border-border bg-surface space-y-3 rounded-2xl border p-6">
                 {project.liveLink && (
                   <Link
                     href={project.liveLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex w-full justify-center rounded-lg bg-[var(--primary)] px-6 py-3 text-black transition-all hover:brightness-110"
+                    className="bg-primary text-primary-contrast inline-flex w-full justify-center rounded-lg px-6 py-3 transition-all hover:brightness-110"
                   >
                     View Live Demo
                   </Link>
@@ -188,7 +188,7 @@ export default async function ProjectPage({
                     href={project.sourceCode}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-foreground inline-flex w-full justify-center rounded-lg border border-[var(--border)] px-6 py-3 transition-all hover:bg-[var(--muted)]"
+                    className="text-foreground border-border hover:bg-surface-raised inline-flex w-full justify-center rounded-lg border px-6 py-3 transition-all"
                   >
                     View Source Code
                   </Link>
@@ -202,7 +202,7 @@ export default async function ProjectPage({
         <div className="mx-auto mt-16 flex max-w-6xl justify-between">
           <Link
             href="/projects"
-            className="text-foreground inline-flex items-center rounded-lg border border-[var(--border)] px-6 py-3 transition-all hover:bg-[var(--muted)]"
+            className="text-foreground border-border hover:bg-surface-raised inline-flex items-center rounded-lg border px-6 py-3 transition-all"
           >
             <svg
               className="mr-2 h-5 w-5"
@@ -222,7 +222,7 @@ export default async function ProjectPage({
 
           <Link
             href="/"
-            className="text-foreground inline-flex items-center rounded-lg border border-[var(--border)] px-6 py-3 transition-all hover:bg-[var(--muted)]"
+            className="text-foreground border-border hover:bg-surface-raised inline-flex items-center rounded-lg border px-6 py-3 transition-all"
           >
             <svg
               className="mr-2 h-5 w-5"

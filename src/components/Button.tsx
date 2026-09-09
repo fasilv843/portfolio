@@ -31,13 +31,13 @@ type Props = AnchorProps | ButtonProps;
 function getStyles(color: ButtonColor = "primary") {
   switch (color) {
     case "primary":
-      return "bg-[var(--primary)] text-black hover:brightness-110";
+      return "bg-primary text-primary-contrast hover:bg-primary-strong";
     case "outline":
-      return "border border-[var(--border)] text-foreground hover:bg-[var(--muted)]";
+      return "border border-border-interactive text-foreground hover:bg-surface-raised";
     case "ghost":
-      return "text-foreground hover:bg-[color-mix(in_oklab,var(--background),white_4%)]";
+      return "text-foreground hover:bg-surface-raised";
     default:
-      return "bg-[var(--primary)] text-black hover:brightness-110";
+      return "bg-primary text-primary-contrast hover:bg-primary-strong";
   }
 }
 
@@ -63,7 +63,7 @@ export default function Button(props: Props) {
     color = "primary",
     className,
   } = props;
-  const base = `inline-flex items-center px-5 py-2.5 rounded-lg transition-all duration-300 transform hover:scale-[1.02] ${getStyles(color)} ${className ?? ""}`;
+  const base = `inline-flex items-center px-5 py-2.5 rounded-lg transition-all duration-300 transform hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${getStyles(color)} ${className ?? ""}`;
 
   if ("href" in props && props.href) {
     return (
