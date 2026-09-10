@@ -4,6 +4,10 @@ import Tag from "@/components/ui/Tag";
 import { experiences } from "@/data/experience";
 
 export default function Experience() {
+  // No `pattern`: the commit-graph ground belongs to the project surfaces, and
+  // Projects sits immediately below this one. Two adjacent sections on the same
+  // ground stop telling each other apart, so this keeps the page blueprint — it
+  // draws its own rail, which is structure enough.
   return (
     <Section id="experience" index="03" title="Work Experience">
       <div className="relative">

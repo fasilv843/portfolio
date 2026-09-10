@@ -39,22 +39,29 @@ export default function Hero() {
             Node.js.
           </p>
 
+          {/* Three lg buttons wrap onto two rows on a narrow screen. Below sm we
+              drop to the two that matter — the CTA and LinkedIn — and step the
+              padding back down to md sizing, so the row stays on one line. */}
           <div
             data-animate
             className="mt-10 flex flex-wrap gap-3 [animation-delay:280ms]"
           >
-            <Button href={`mailto:${EMAIL}`} label="Get in touch" size="lg" />
+            <Button
+              href={`mailto:${EMAIL}`}
+              label="Get in touch"
+              className="sm:px-7 sm:py-3.5 sm:text-lg"
+            />
             <Button
               href="https://github.com/fasilv843"
               label="GitHub"
               color="outline"
-              size="lg"
+              className="max-sm:hidden sm:px-7 sm:py-3.5 sm:text-lg"
             />
             <Button
               href="https://linkedin.com/in/fasilv843"
               label="LinkedIn"
               color="outline"
-              size="lg"
+              className="sm:px-7 sm:py-3.5 sm:text-lg"
             />
           </div>
         </div>
