@@ -10,31 +10,54 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /* ---------------------------------------------------------------------------
-   Semantic colour tokens. Every pair below was checked against WCAG AA before
-   being written down; the hex in each comment is the value that was verified.
-   Worst cases: light --primary as text 4.90:1, light --foreground-faint 4.72:1.
+   Semantic colour tokens. Every ratio quoted here was MEASURED, not estimated:
+   the OKLCH values below were converted to sRGB and run through WCAG, and the
+   hex in each comment is that conversion's output. Re-measure after any edit
+   rather than trusting these numbers — the pattern budget further down depends
+   on them and drifts silently.
+
+   Worst real pairs: light --foreground-faint on --background 5.71:1, dark
+   --foreground-faint on --surface 5.49:1. "Real" matters — a matrix of every
+   token against every surface reports pairs the components never actually
+   build (nothing renders --primary on --surface-raised), and gating on those
+   would push the palette flat for no one's benefit.
+
+   Chroma is capped at what sRGB can render at each lightness. Teal tops out
+   near C 0.08 around L 48%, so --primary sits just inside that boundary; ask
+   for more and the browser gamut-maps it, which is both invisible and
+   inconsistent between engines. The previous --primary (C 0.0923 at L 53%) was
+   marginally over that line.
 
    --border is deliberately below 3:1. WCAG 1.4.11 applies to controls whose
    boundary is the only way to identify them, not to decorative card edges, so
-   interactive outlines use --border-interactive (verified >= 3:1) instead.
+   interactive outlines use --border-interactive (measured >= 3:1) instead.
 --------------------------------------------------------------------------- */
 
-/* Light is the base. */
+/* Light is the base: cool drafting stock, not white. Nothing here is #ffffff.
+   The page sits at L 96.9% so a card can be LIGHTER than its ground and still
+   stop short of white — that step is what makes a card read as a card.
+
+   The ladder is not monotonic by name, and that is deliberate: --surface is
+   lighter than --background (cards lift off the page) while --surface-raised is
+   DARKER (a hover wash in light mode has to move toward the ink; there is no
+   room above --surface to move the other way). The names describe elevation in
+   dark, where the ladder does run in one direction. Do not "fix" the ordering
+   without also revisiting Tag.tsx and the three icon-button hovers. */
 :root {
-  --background: oklch(99.1% 0.0013 286.4); /* #fcfcfd */
-  --surface: oklch(100% 0 89.9); /* #ffffff */
-  --surface-raised: oklch(97.6% 0.0029 264.5); /* #f6f7f9 */
-  --surface-sunken: oklch(96.1% 0.0041 271.4); /* #f1f2f5 */
-  --foreground: oklch(17.7% 0.0089 264.3); /* #0f1115 */
-  --foreground-muted: oklch(42.7% 0.0193 266.1); /* #4a4f5a */
-  --foreground-faint: oklch(55.1% 0.0234 264.4); /* #6b7280 */
-  --border: oklch(89.2% 0.0085 271.3); /* #d9dbe1 */
-  --border-strong: oklch(78.2% 0.0148 268.5); /* #b4b8c2 */
-  --border-interactive: oklch(60.6% 0.0177 266.2); /* #7d828d */
-  --primary: oklch(53% 0.0923 182.1); /* #0d7d70 */
-  --primary-strong: oklch(45.3% 0.0785 181.7); /* #0a6459 */
-  --primary-contrast: oklch(100% 0 89.9); /* #ffffff */
-  --ring: oklch(53% 0.0923 182.1); /* #0d7d70 */
+  --background: oklch(96.9% 0.0035 236); /* #f3f5f7 */
+  --surface: oklch(99.3% 0.0015 236); /* #fcfdfe */
+  --surface-raised: oklch(93.5% 0.0055 236); /* #e6eaed */
+  --surface-sunken: oklch(95.2% 0.0045 236); /* #ecf0f2 */
+  --foreground: oklch(21.5% 0.0135 250); /* #151a20 */
+  --foreground-muted: oklch(43.5% 0.0205 250); /* #49525c */
+  --foreground-faint: oklch(49% 0.0225 250); /* #57626d */
+  --border: oklch(88.5% 0.0075 236); /* #d5dadd */
+  --border-strong: oklch(77.5% 0.0145 240); /* #aeb7be */
+  --border-interactive: oklch(59.5% 0.0185 245); /* #768089 */
+  --primary: oklch(48% 0.079 185); /* #146c63 */
+  --primary-strong: oklch(40% 0.066 185); /* #0d534c */
+  --primary-contrast: oklch(99.3% 0.0015 236); /* #fcfdfe */
+  --ring: oklch(48% 0.079 185); /* #146c63 */
 
   /* Decorative ground. See the pattern block further down for why the colour
      is a token per theme and not just an opacity: painting the ground moves it
@@ -42,36 +65,44 @@
 
      The budget is the LOCAL worst case — a text pixel sitting directly on a
      stroke — not the average, since these tiles cover only a few percent of
-     their area. Light bottoms out on --primary as text at 4.90:1, which holds
-     to about 7% before it breaks 4.5:1. That is where this sits.
+     their area. And the worst case is BOTH layers: in a patterned section
+     body::before paints at --ground-opacity and the section's own tile paints
+     at --pattern-opacity on top of it. Budgeting one layer at a time, as this
+     block used to, understates the cost by roughly a third.
+
+     Stacked at 4.5% + 6% the weakest real pairs (--foreground-faint and
+     --primary as text) land at 5.17:1 and 5.18:1, from 5.71 and 5.73 clean.
+     They stay above 4.5:1 out past 10% + 12%, so the binding constraint here is
+     the eye, not the checker. These are a touch lower than the values this ran
+     at against the old near-white page: the same ink alpha reads stronger on a
+     ground that is itself 2 points darker.
 
      --pattern-opacity-soft is for tiles dense enough that the budget is not the
-     binding constraint — the eye tires of them before the contrast checker
-     objects. Only "stack" uses it. */
+     binding constraint. Only "stack" uses it. */
   --pattern-color: var(--foreground);
-  --pattern-opacity: 0.07;
-  --pattern-opacity-soft: 0.05;
-  --ground-opacity: 0.05;
+  --pattern-opacity: 0.06;
+  --pattern-opacity-soft: 0.045;
+  --ground-opacity: 0.045;
 }
 
 /* Pre-hydration and no-JS system preference. The :not() guard means an explicit
    light choice still wins on a dark-OS machine. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --background: oklch(15% 0.0088 274.3); /* #0a0b0f */
-    --surface: oklch(18.8% 0.0123 277.7); /* #121319 */
-    --surface-raised: oklch(22.4% 0.0137 278.8); /* #1a1b22 */
-    --surface-sunken: oklch(13.5% 0.0072 269); /* #07080b */
-    --foreground: oklch(92.6% 0.0054 286.3); /* #e6e6ea */
-    --foreground-muted: oklch(73.4% 0.0114 286.1); /* #a8a8b0 */
-    --foreground-faint: oklch(62.3% 0.0134 286); /* #86868f */
-    --border: oklch(29.5% 0.0184 276.3); /* #2a2c36 */
-    --border-strong: oklch(37.3% 0.0209 274.3); /* #3d404c */
-    --border-interactive: oklch(52.5% 0.021 272.1); /* #666a77 */
-    --primary: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
-    --primary-strong: oklch(90.7% 0.1425 177.3); /* #5cffdf */
-    --primary-contrast: oklch(22.8% 0.0367 176.7); /* #05221c */
-    --ring: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
+    --background: oklch(18.5% 0.009 250); /* #101317 */
+    --surface: oklch(21.8% 0.0115 250); /* #161b1f */
+    --surface-raised: oklch(25.5% 0.013 250); /* #1e2329 */
+    --surface-sunken: oklch(15.5% 0.008 250); /* #0a0d10 */
+    --foreground: oklch(91.5% 0.0055 250); /* #e0e3e6 */
+    --foreground-muted: oklch(73% 0.0125 250); /* #a2a8af */
+    --foreground-faint: oklch(65.5% 0.0145 250); /* #8a9299 */
+    --border: oklch(31% 0.017 250); /* #2a3139 */
+    --border-strong: oklch(39% 0.02 250); /* #3d4650 */
+    --border-interactive: oklch(53.5% 0.021 250); /* #646e79 */
+    --primary: oklch(82% 0.115 185); /* #5cdcce */
+    --primary-strong: oklch(89% 0.098 185); /* #8af0e3 */
+    --primary-contrast: oklch(21% 0.035 185); /* #021d1a */
+    --ring: oklch(82% 0.115 185); /* #5cdcce */
 
     --pattern-color: var(--border-strong);
     --pattern-opacity: 0.18;
@@ -80,32 +111,51 @@
   }
 }
 
-/* An explicit choice always wins. */
+/* An explicit choice always wins.
+
+   Dark is a lit desk, not a void. The page was at L 15% — close enough to black
+   that --foreground landed at 16.5:1, which is past the point where white-on-
+   black starts to smear for long reading. L 18.5% keeps the theme deep while
+   pulling that back to 14.5:1, and it gives the four surfaces room to separate
+   from each other instead of crowding the bottom of the scale.
+
+   --primary is one accent with light, not a second brand colour. It was
+   #00ffd1: an acid mint at C 0.171 against a muted C 0.09 teal in light, so
+   toggling the theme changed the identity rather than the ground. Both now sit
+   at hue 185 and differ only in the lightness their ground calls for.
+
+   --primary-strong is the hover for --primary and used to be 1.5 L points away
+   from it, which is not a visible state change. It is 7 points now. In dark
+   hover goes lighter; in light it goes darker. Button.tsx depends on that. */
 [data-theme="dark"] {
-  --background: oklch(15% 0.0088 274.3); /* #0a0b0f */
-  --surface: oklch(18.8% 0.0123 277.7); /* #121319 */
-  --surface-raised: oklch(22.4% 0.0137 278.8); /* #1a1b22 */
-  --surface-sunken: oklch(13.5% 0.0072 269); /* #07080b */
-  --foreground: oklch(92.6% 0.0054 286.3); /* #e6e6ea */
-  --foreground-muted: oklch(73.4% 0.0114 286.1); /* #a8a8b0 */
-  --foreground-faint: oklch(62.3% 0.0134 286); /* #86868f */
-  --border: oklch(29.5% 0.0184 276.3); /* #2a2c36 */
-  --border-strong: oklch(37.3% 0.0209 274.3); /* #3d404c */
-  --border-interactive: oklch(52.5% 0.021 272.1); /* #666a77 */
-  --primary: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
-  --primary-strong: oklch(90.7% 0.1425 177.3); /* #5cffdf */
-  --primary-contrast: oklch(22.8% 0.0367 176.7); /* #05221c */
-  --ring: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
+  --background: oklch(18.5% 0.009 250); /* #101317 */
+  --surface: oklch(21.8% 0.0115 250); /* #161b1f */
+  --surface-raised: oklch(25.5% 0.013 250); /* #1e2329 */
+  --surface-sunken: oklch(15.5% 0.008 250); /* #0a0d10 */
+  --foreground: oklch(91.5% 0.0055 250); /* #e0e3e6 */
+  --foreground-muted: oklch(73% 0.0125 250); /* #a2a8af */
+  --foreground-faint: oklch(65.5% 0.0145 250); /* #8a9299 */
+  --border: oklch(31% 0.017 250); /* #2a3139 */
+  --border-strong: oklch(39% 0.02 250); /* #3d4650 */
+  --border-interactive: oklch(53.5% 0.021 250); /* #646e79 */
+  --primary: oklch(82% 0.115 185); /* #5cdcce */
+  --primary-strong: oklch(89% 0.098 185); /* #8af0e3 */
+  --primary-contrast: oklch(21% 0.035 185); /* #021d1a */
+  --ring: oklch(82% 0.115 185); /* #5cdcce */
 
-  /* Dark uses --border-strong, not --foreground. --background here is near
-     black (relative luminance 0.0045), so a near-white ground at even 5%
-     drags --foreground-faint from 5.3:1 down to about 3.1:1 — a failure. The
-     ceiling for a white ground is ~1.2%, far too faint to see. --border-strong
-     (L 0.052) raises that ceiling to ~20%, so 18% is both visible and safe.
+  /* Dark uses --border-strong, not --foreground. Painting the ground with a
+     near-white would drag --foreground-faint under 4.5:1 within a couple of
+     percent — far too faint to see — because here the ground moves the
+     background TOWARD the text. --border-strong is close enough to the
+     background to leave real headroom.
 
-     The higher number is not a louder pattern: 18% of --border-strong on this
-     background lands within a couple of levels of what 7% of --foreground does
-     in light, so the two themes read at the same strength. */
+     Measured stacked (12% ground + 18% pattern, both layers, on a text pixel
+     sitting directly on a stroke): --foreground-faint 4.66:1, the binding pair.
+     The ceiling is ~14% + 20%. Lifting --background to L 18.5% cost some of the
+     margin the old near-black had, which is why these did not go up.
+
+     The higher numbers are not a louder pattern than light's 4.5% + 6%: on a
+     dark ground a mark needs more amplitude to read at all. */
   --pattern-color: var(--border-strong);
   --pattern-opacity: 0.18;
   --pattern-opacity-soft: 0.14;
@@ -462,7 +512,11 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background-color: var(--background);
-  opacity: 0.78;
+  /* 0.78 dates from when light --background was #fcfcfd — over a white page the
+     scrim was very nearly a no-op, so the number could be generous without
+     showing. --background is a real off-white now and this paints an actual
+     tint, so it needs to be the lightest touch that still knocks the tile back. */
+  opacity: 0.7;
   border-radius: 0.75rem;
   -webkit-mask-image: radial-gradient(
     120% 100% at 50% 50%,

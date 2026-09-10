@@ -6,10 +6,10 @@ export const alt = `Projects by ${AUTHOR}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const BG = "#0a0b0f";
-const FG = "#e6e6ea";
-const MUTED = "#a8a8b0";
-const ACCENT = "#00ffd1";
+const BG = "#101317";
+const FG = "#e0e3e6";
+const MUTED = "#a2a8af";
+const ACCENT = "#5cdcce";
 
 export default async function Image() {
   return new ImageResponse(

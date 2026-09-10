@@ -8,10 +8,10 @@ export const contentType = "image/png";
 // Palette is inlined rather than read from CSS tokens: this renders outside the
 // browser, so --background and friends do not exist here. Values match the dark
 // theme in globals.css.
-const BG = "#0a0b0f";
-const FG = "#e6e6ea";
-const MUTED = "#a8a8b0";
-const ACCENT = "#00ffd1";
+const BG = "#101317";
+const FG = "#e0e3e6";
+const MUTED = "#a2a8af";
+const ACCENT = "#5cdcce";
 
 export default async function Image() {
   return new ImageResponse(
