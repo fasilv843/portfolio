@@ -35,6 +35,23 @@
   --primary-strong: oklch(45.3% 0.0785 181.7); /* #0a6459 */
   --primary-contrast: oklch(100% 0 89.9); /* #ffffff */
   --ring: oklch(53% 0.0923 182.1); /* #0d7d70 */
+
+  /* Decorative ground. See the pattern block further down for why the colour
+     is a token per theme and not just an opacity: painting the ground moves it
+     toward the text, so contrast only ever drops in both directions.
+
+     The budget is the LOCAL worst case — a text pixel sitting directly on a
+     stroke — not the average, since these tiles cover only a few percent of
+     their area. Light bottoms out on --primary as text at 4.90:1, which holds
+     to about 7% before it breaks 4.5:1. That is where this sits.
+
+     --pattern-opacity-soft is for tiles dense enough that the budget is not the
+     binding constraint — the eye tires of them before the contrast checker
+     objects. Only "stack" uses it. */
+  --pattern-color: var(--foreground);
+  --pattern-opacity: 0.07;
+  --pattern-opacity-soft: 0.05;
+  --ground-opacity: 0.05;
 }
 
 /* Pre-hydration and no-JS system preference. The :not() guard means an explicit
@@ -55,6 +72,11 @@
     --primary-strong: oklch(90.7% 0.1425 177.3); /* #5cffdf */
     --primary-contrast: oklch(22.8% 0.0367 176.7); /* #05221c */
     --ring: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
+
+    --pattern-color: var(--border-strong);
+    --pattern-opacity: 0.18;
+    --pattern-opacity-soft: 0.14;
+    --ground-opacity: 0.12;
   }
 }
 
@@ -74,6 +96,20 @@
   --primary-strong: oklch(90.7% 0.1425 177.3); /* #5cffdf */
   --primary-contrast: oklch(22.8% 0.0367 176.7); /* #05221c */
   --ring: oklch(89.2% 0.1708 173.2); /* #00ffd1 */
+
+  /* Dark uses --border-strong, not --foreground. --background here is near
+     black (relative luminance 0.0045), so a near-white ground at even 5%
+     drags --foreground-faint from 5.3:1 down to about 3.1:1 — a failure. The
+     ceiling for a white ground is ~1.2%, far too faint to see. --border-strong
+     (L 0.052) raises that ceiling to ~20%, so 18% is both visible and safe.
+
+     The higher number is not a louder pattern: 18% of --border-strong on this
+     background lands within a couple of levels of what 7% of --foreground does
+     in light, so the two themes read at the same strength. */
+  --pattern-color: var(--border-strong);
+  --pattern-opacity: 0.18;
+  --pattern-opacity-soft: 0.14;
+  --ground-opacity: 0.12;
 }
 
 @theme inline {
@@ -225,6 +261,309 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
   min-height: 100vh;
+}
+
+/* ---------------------------------------------------------------------------
+   Decorative ground.
+
+   Every tile is masked, not painted: `mask-image` carries the shape and
+   `background-color` carries the colour, so a single tile serves both themes
+   and follows --pattern-color instead of baking a hex into the artwork.
+
+   Three rules the tiles above depend on, each of which fails silently:
+
+   1. Masks read ALPHA (mask-mode defaults to match-source, which is alpha for
+      an SVG). A tile with a background <rect> is opaque everywhere, passes the
+      whole mask, and renders as a solid slab of colour. None of these have one.
+   2. No '#' survives a data URI — it opens a URL fragment and truncates the
+      rest of the SVG. The tiles are authored with `black`, never a hex.
+   3. -webkit- prefixes are not optional. There is no browserslist in
+      package.json, so the floor is Lightning CSS's own Chrome 111 target, and
+      unprefixed mask-* did not ship until Chrome 120. The optimiser that would
+      add them does not run in `next dev`, so dev and prod would disagree.
+
+   Deliberately not used: the `mask` shorthand (it resets mask-mode and friends,
+   and the -webkit- grammar differs) and `mask-composite` (`add` is already the
+   initial value, and the prefixed property takes a different keyword set).
+--------------------------------------------------------------------------- */
+
+:root {
+  /* Tiles are theme-independent — only their colour and opacity change.
+
+     GENERATED. The three url() values below are written by
+     scripts/pattern-tiles.mjs, which holds the SVG source in readable form.
+     Change the artwork there and run `npm run tiles`; editing the encoded data
+     URI by hand is not practical, since each has to be one physical line. */
+  --pattern-stack: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='360'%20height='360'%20viewBox='0%200%20360%20360'%20fill='none'%20stroke='black'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cg%20transform='translate(50%2044)%20rotate(-12)%20scale(1)'%3E%20%3Cg%20stroke-width='2.2'%3E%20%3Cellipse%20rx='18'%20ry='6.9'/%3E%20%3Cellipse%20rx='18'%20ry='6.9'%20transform='rotate(60)'/%3E%20%3Cellipse%20rx='18'%20ry='6.9'%20transform='rotate(120)'/%3E%20%3C/g%3E%20%3Ccircle%20r='3.5'%20fill='black'%20stroke='none'/%3E%3C/g%3E%3Cg%20transform='translate(148%2070)%20rotate(8)%20scale(1.05)'%3E%20%3Cg%20stroke-width='2.0'%3E%20%3Crect%20x='-16'%20y='-4'%20width='7'%20height='7'/%3E%20%3Crect%20x='-7.5'%20y='-4'%20width='7'%20height='7'/%3E%20%3Crect%20x='1'%20y='-4'%20width='7'%20height='7'/%3E%20%3Crect%20x='-7.5'%20y='-12.5'%20width='7'%20height='7'/%3E%20%3Crect%20x='1'%20y='-12.5'%20width='7'%20height='7'/%3E%20%3Cpath%20d='M-19%205.5%20h38%20a9%209%200%200%201%20-9%209%20h-20%20a9%209%200%200%201%20-9%20-9%20Z'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(250%2040)%20rotate(-20)%20scale(0.9)'%3E%20%3Cg%20stroke-width='2.4'%3E%20%3Cpath%20d='M-3%20-19%20L13%2011.5%20L-13.5%2017.5%20Z'/%3E%20%3Cpath%20d='M-3%20-19%20L-5.5%209.5'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(330%2092)%20rotate(14)%20scale(0.8)'%3E%20%3Cg%20stroke-width='2.4'%3E%20%3Cpath%20d='M0%20-18%20L16%20-12.5%20L13.4%2010%20L0%2018%20L-13.4%2010%20L-16%20-12.5%20Z'/%3E%20%3Cpath%20d='M-5.6%207%20L0%20-8.4%20L5.6%207'/%3E%20%3Cpath%20d='M-3.2%201.6%20L3.2%201.6'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(32%20150)%20rotate(14)%20scale(1.05)'%3E%20%3Cg%20fill='black'%20stroke='none'%3E%20%3Cpath%20d='M-17%20-6%20C-13.6%20-13.2%20-9.3%20-16%20-4.3%20-16%20C3.4%20-16%204.3%20-10.3%208.1%20-8.9%20C10.7%20-7.9%2012.9%20-8.8%2015%20-11.5%20C11.6%20-4.3%207.3%20-1.5%202.3%20-1.5%20C-5.4%20-1.5%20-6.3%20-7.2%20-10.1%20-8.6%20C-12.7%20-9.6%20-14.9%20-8.7%20-17%20-6%20Z'/%3E%20%3Cpath%20d='M-17%2010%20C-13.6%202.8%20-9.3%200%20-4.3%200%20C3.4%200%204.3%205.7%208.1%207.1%20C10.7%208.1%2012.9%207.2%2015%204.5%20C11.6%2011.7%207.3%2014.5%202.3%2014.5%20C-5.4%2014.5%20-6.3%208.8%20-10.1%207.4%20C-12.7%206.4%20-14.9%207.3%20-17%2010%20Z'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(134%20172)%20rotate(-8)%20scale(0.85)'%3E%20%3Cpath%20fill='black'%20stroke='none'%20d='M0%20-19%20C7.5%20-11%2012%20-3.5%2012%204%20C12%2012%206%2017.5%201.6%2019.5%20L1.6%2012%20L-1.6%2012%20L-1.6%2019.5%20C-6%2017.5%20-12%2012%20-12%204%20C-12%20-3.5%20-7.5%20-11%200%20-19%20Z'/%3E%3C/g%3E%3Cg%20transform='translate(232%20142)%20rotate(16)%20scale(0.95)'%3E%20%3Cg%20stroke-width='2.4'%3E%20%3Cpath%20d='M0%20-18%20L15.6%20-9%20L15.6%209%20L0%2018%20L-15.6%209%20L-15.6%20-9%20Z'/%3E%20%3Cpath%20d='M-5.5%20-4%20L-5.5%206%20A4%204%200%200%201%20-13%206'/%3E%20%3Cpath%20d='M13%20-3%20A5%204%200%200%200%203%20-2%20A5%204%200%200%200%2013%201%20A5%204%200%200%201%203%203'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(322%20188)%20rotate(-18)%20scale(0.8)'%3E%20%3Cg%20stroke-width='2.4'%3E%20%3Cellipse%20cy='-9'%20rx='16'%20ry='5.2'/%3E%20%3Cpath%20d='M-16%20-9%20v6%20a16%205.2%200%200%200%2032%200%20v-6'/%3E%20%3Cpath%20d='M-16%200%20v6%20a16%205.2%200%200%200%2032%200%20v-6'/%3E%20%3Cpath%20d='M-16%209%20v5%20a16%205.2%200%200%200%2032%200%20v-5'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(64%20252)%20rotate(10)%20scale(0.95)'%3E%20%3Cg%20stroke-width='2.4'%3E%20%3Cpath%20d='M-10%2014%20L-10%20-14'/%3E%20%3Cpath%20d='M-10%203%20C-10%20-4%202%20-3%208%20-6'/%3E%20%3Ccircle%20cx='-10'%20cy='14'%20r='3.6'%20fill='black'%20stroke='none'/%3E%20%3Ccircle%20cx='-10'%20cy='-14'%20r='3.6'/%3E%20%3Ccircle%20cx='10'%20cy='-8'%20r='3.6'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(166%20274)%20rotate(22)%20scale(0.75)'%3E%20%3Cg%20stroke-width='2.2'%3E%20%3Cellipse%20rx='18'%20ry='6.9'/%3E%20%3Cellipse%20rx='18'%20ry='6.9'%20transform='rotate(60)'/%3E%20%3Cellipse%20rx='18'%20ry='6.9'%20transform='rotate(120)'/%3E%20%3C/g%3E%20%3Ccircle%20r='3.5'%20fill='black'%20stroke='none'/%3E%3C/g%3E%3Cg%20transform='translate(262%20246)%20rotate(-12)%20scale(0.85)'%3E%20%3Cg%20stroke-width='2.0'%3E%20%3Crect%20x='-16'%20y='-4'%20width='7'%20height='7'/%3E%20%3Crect%20x='-7.5'%20y='-4'%20width='7'%20height='7'/%3E%20%3Crect%20x='1'%20y='-4'%20width='7'%20height='7'/%3E%20%3Crect%20x='-7.5'%20y='-12.5'%20width='7'%20height='7'/%3E%20%3Crect%20x='1'%20y='-12.5'%20width='7'%20height='7'/%3E%20%3Cpath%20d='M-19%205.5%20h38%20a9%209%200%200%201%20-9%209%20h-20%20a9%209%200%200%201%20-9%20-9%20Z'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(336%20292)%20rotate(8)%20scale(0.75)'%3E%20%3Cg%20stroke-width='2.4'%3E%20%3Cpath%20d='M-3%20-19%20L13%2011.5%20L-13.5%2017.5%20Z'/%3E%20%3Cpath%20d='M-3%20-19%20L-5.5%209.5'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(44%20332)%20rotate(-6)%20scale(0.8)'%3E%20%3Cg%20stroke-width='2.4'%3E%20%3Cpath%20d='M0%20-18%20L16%20-12.5%20L13.4%2010%20L0%2018%20L-13.4%2010%20L-16%20-12.5%20Z'/%3E%20%3Cpath%20d='M-5.6%207%20L0%20-8.4%20L5.6%207'/%3E%20%3Cpath%20d='M-3.2%201.6%20L3.2%201.6'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(240%20336)%20rotate(18)%20scale(0.7)'%3E%20%3Cpath%20fill='black'%20stroke='none'%20d='M0%20-19%20C7.5%20-11%2012%20-3.5%2012%204%20C12%2012%206%2017.5%201.6%2019.5%20L1.6%2012%20L-1.6%2012%20L-1.6%2019.5%20C-6%2017.5%20-12%2012%20-12%204%20C-12%20-3.5%20-7.5%20-11%200%20-19%20Z'/%3E%3C/g%3E%3C/svg%3E");
+  --pattern-glyphs: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='290'%20height='290'%20viewBox='0%200%20290%20290'%20fill='none'%20stroke='black'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cg%20transform='translate(44%2038)%20rotate(-10)%20scale(1)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-5%20-14%20C-10%20-14%20-8%20-3%20-13%200%20C-8%203%20-10%2014%20-5%2014'/%3E%20%3Cpath%20d='M5%20-14%20C10%20-14%208%20-3%2013%200%20C8%203%2010%2014%205%2014'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(130%2056)%20rotate(12)%20scale(1)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-6%20-8%20L-14%200%20L-6%208'/%3E%20%3Cpath%20d='M-2%2010%20L2%20-10'/%3E%20%3Cpath%20d='M6%20-8%20L14%200%20L6%208'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(222%2034)%20rotate(-6)%20scale(1)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-14%20-3%20L2%20-3'/%3E%20%3Cpath%20d='M-14%203%20L2%203'/%3E%20%3Cpath%20d='M6%20-6%20L13%200%20L6%206'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(272%2096)%20rotate(8)%20scale(1)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Ccircle%20cy='-7'%20r='1.9'%20fill='black'%20stroke='none'/%3E%20%3Ccircle%20cy='4'%20r='1.9'%20fill='black'%20stroke='none'/%3E%20%3Cpath%20d='M0.8%205.4%20C1.4%209%20-0.4%2011.4%20-2.8%2012.8'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(30%20118)%20rotate(14)%20scale(1)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-7%2010%20L-1%20-10'/%3E%20%3Cpath%20d='M3%2010%20L9%20-10'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(112%20140)%20rotate(-14)%20scale(1)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-6%20-13%20C-12%20-7%20-12%207%20-6%2013'/%3E%20%3Cpath%20d='M6%20-13%20C12%20-7%2012%207%206%2013'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(200%20118)%20rotate(10)%20scale(1)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-12%20-7%20L-4%200%20L-12%207'/%3E%20%3Cpath%20d='M-1%208%20L12%208'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(268%20176)%20rotate(-8)%20scale(1)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-4%20-13%20L-11%20-13%20L-11%2013%20L-4%2013'/%3E%20%3Cpath%20d='M4%20-13%20L11%20-13%20L11%2013%20L4%2013'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(40%20210)%20rotate(16)%20scale(0.85)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-12%200%20L0%20-11%20L12%200%20L0%2011%20Z'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(126%20232)%20rotate(-12)%20scale(0.9)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-6%20-8%20L-14%200%20L-6%208'/%3E%20%3Cpath%20d='M-2%2010%20L2%20-10'/%3E%20%3Cpath%20d='M6%20-8%20L14%200%20L6%208'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(212%20244)%20rotate(8)%20scale(0.85)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-5%20-14%20C-10%20-14%20-8%20-3%20-13%200%20C-8%203%20-10%2014%20-5%2014'/%3E%20%3Cpath%20d='M5%20-14%20C10%20-14%208%20-3%2013%200%20C8%203%2010%2014%205%2014'/%3E%20%3C/g%3E%3C/g%3E%3Cg%20transform='translate(62%20274)%20rotate(-16)%20scale(0.8)'%3E%20%3Cg%20stroke-width='2.6'%3E%20%3Cpath%20d='M-14%20-3%20L2%20-3'/%3E%20%3Cpath%20d='M-14%203%20L2%203'/%3E%20%3Cpath%20d='M6%20-6%20L13%200%20L6%206'/%3E%20%3C/g%3E%3C/g%3E%3C/svg%3E");
+  --pattern-graph: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='240'%20height='240'%20viewBox='0%200%20240%20240'%20fill='none'%20stroke='black'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cg%20stroke-width='2.4'%3E%20%3Cpath%20d='M48%200%20L48%20240'/%3E%20%3Cpath%20d='M120%200%20L120%20240'/%3E%20%3Cpath%20d='M192%200%20L192%20240'/%3E%20%3Cpath%20d='M48%20132%20C48%20108%20120%20116%20120%2092'/%3E%20%3Cpath%20d='M120%20196%20C120%20216%20192%20208%20192%20228'/%3E%20%3Cpath%20d='M192%2060%20C192%2040%20120%2048%20120%2028'/%3E%20%3C/g%3E%20%3Cg%20fill='black'%20stroke='none'%3E%20%3Ccircle%20cx='48'%20cy='36'%20r='4'/%3E%20%3Ccircle%20cx='48'%20cy='132'%20r='4'/%3E%20%3Ccircle%20cx='48'%20cy='204'%20r='4'/%3E%20%3Ccircle%20cx='120'%20cy='28'%20r='4'/%3E%20%3Ccircle%20cx='120'%20cy='92'%20r='4'/%3E%20%3Ccircle%20cx='120'%20cy='196'%20r='4'/%3E%20%3Ccircle%20cx='192'%20cy='60'%20r='4'/%3E%20%3Ccircle%20cx='192'%20cy='152'%20r='4'/%3E%20%3Ccircle%20cx='192'%20cy='228'%20r='4'/%3E%20%3C/g%3E%3C/svg%3E");
+
+  /* Gradients need no SVG at all. Partial alpha on the rules keeps them under
+     the dots, since one opacity governs every layer of a given element.
+
+     The dots are 0.65, not opaque: this is the page-wide ground, so its dots
+     are the local worst case for EVERY line of type on the site rather than
+     for one section's. 0.65 is where the dot field the ground replaced sat,
+     which keeps both the weight and the contrast budget where they were. */
+  --pattern-blueprint:
+    radial-gradient(
+      circle at center,
+      rgba(0, 0, 0, 0.65) 1.4px,
+      transparent 1.5px
+    ),
+    linear-gradient(to right, rgba(0, 0, 0, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.4) 1px, transparent 1px);
+}
+
+/* The page-wide ground: blueprint, on every route, since it comes from body —
+   home, /projects, a detail page, 404 and the error boundary alike. It is the
+   base every other ground sits on top of, which is why no section opts into
+   blueprint: layering it on itself only doubles it.
+
+   Fixed, not absolute: body is statically positioned, so an absolute pseudo
+   would size to the initial containing block — one viewport at the document
+   origin, nothing below the fold. Giving body `position: relative` to fix that
+   would re-anchor the skip link in layout.tsx, which currently resolves against
+   the viewport and must keep doing so.
+
+   Fixed also means the grid holds still while the page scrolls over it — a
+   drafting desk the content moves across, deliberately, not a texture glued to
+   the document. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--pattern-color);
+  opacity: var(--ground-opacity);
+  -webkit-mask-image: var(--pattern-blueprint);
+  mask-image: var(--pattern-blueprint);
+  /* Three layers, one per gradient: the dot field, then the two rules. Every
+     fourth dot lands on an intersection, so the grid reads as measured rather
+     than as two unrelated patterns. */
+  -webkit-mask-size:
+    26px 26px,
+    104px 104px,
+    104px 104px;
+  mask-size:
+    26px 26px,
+    104px 104px,
+    104px 104px;
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+/* Per-section grounds. Section.tsx sets `relative isolate` unconditionally:
+   isolate is load-bearing, not decoration. Without a stacking context the
+   z-index:-1 pseudo escapes to the root and paints behind the ground above.
+
+   There is no section divider to hide the tile's edges behind any more, so the
+   PAINT carries a vertical fade while the mask goes on carrying the tile shapes:
+   the ground eases in and out of the page-wide blueprint instead of stopping at
+   a hard horizontal line. Done with a gradient background rather than a second
+   mask layer on purpose — that would mean mask-composite and the prefixed mask
+   grammar the note above rules out. Stops are fixed lengths, not percentages, so
+   the fade is the same depth on a short section as on a tall one; on a box under
+   280px tall the two cross and clamp to a symmetric fade, which is what a box
+   that short wants anyway.
+
+   mask-position is pinned to 0 0 rather than left at a percentage, so tiling
+   starts at each box's corner and every section is in the same phase regardless
+   of its height. */
+[data-pattern]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    var(--pattern-color) 140px,
+    var(--pattern-color) calc(100% - 140px),
+    transparent 100%
+  );
+  opacity: var(--pattern-opacity);
+  -webkit-mask-image: var(--pattern-image);
+  mask-image: var(--pattern-image);
+  -webkit-mask-size: var(--pattern-size);
+  mask-size: var(--pattern-size);
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+
+/* Variants carry values only, never mechanics, so adding one stays two lines.
+   There are two, and no blueprint variant: blueprint is the page ground on body
+   above, so a section asking for it would only paint it twice.
+
+   Skills is the loud one and the only two-layer tile: the marks it scatters are
+   the same stack the section lists above it, so the ground is an echo of its
+   own content. 360 and 290 are coprime, which puts the combined repeat period
+   at 10440px — longer than the section, so the seam never resolves.
+
+   It is also the only variant on the soft opacity. Two layers of marks over the
+   page grid is three patterns deep, and Skills is the one section whose content
+   is bare text with no card to sit on — hence .ground-plate below as well. */
+[data-pattern="stack"] {
+  --pattern-image: var(--pattern-stack), var(--pattern-glyphs);
+  --pattern-size: 360px 360px, 290px 290px;
+  --pattern-opacity: var(--pattern-opacity-soft);
+}
+
+/* Branches and merges — project lineage. This is the ground for every project
+   surface: the Projects section, /projects and each detail page. The lanes run
+   the full tile height, so it is seamless vertically however tall the box
+   grows, which matters most on the pages where the content length varies. */
+[data-pattern="graph"] {
+  --pattern-image: var(--pattern-graph);
+  --pattern-size: 240px 240px;
+}
+
+/* ---------------------------------------------------------------------------
+   Lifting content off a ground.
+
+   Cards already do this — an opaque bg-surface hides whatever is behind it — so
+   these two are for the places with no card: Skills' bare lists, and the
+   heading block of any patterned section.
+
+   .ground-plate is a scrim, not a card: --background at partial opacity with a
+   radial mask fading it out well before its own edge, so it knocks the tile
+   back without ever drawing a boundary the eye can find.
+
+   The negative-z pseudo needs `isolation: isolate` on the plate itself. Without
+   it the pseudo joins the SECTION's stacking context, where the section's own
+   ground pseudo also sits at z-index -1, and the two order by tree position —
+   which happens to work here and would silently stop working the moment a plate
+   moved. With it the plate carries its own context and the scrim is
+   unambiguously between the ground and the plate's content.
+
+   .ground-halo is the same idea for glyph-level collisions the scrim cannot
+   help with — a lane passing exactly through a letterform. text-shadow
+   inherits, so one class on a wrapper covers all of its text; the descendant
+   rule catches the skill logos, which are images and take no text-shadow.
+--------------------------------------------------------------------------- */
+
+.ground-plate {
+  position: relative;
+  isolation: isolate;
+}
+
+.ground-plate::before {
+  content: "";
+  position: absolute;
+  /* Wider than tall: the horizontal reach clears the longest skill name, while
+     a tall inset would start bleeding into the next column's row rhythm. */
+  inset: -1rem -1.25rem;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--background);
+  opacity: 0.78;
+  border-radius: 0.75rem;
+  -webkit-mask-image: radial-gradient(
+    120% 100% at 50% 50%,
+    black 55%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    120% 100% at 50% 50%,
+    black 55%,
+    transparent 100%
+  );
+}
+
+.ground-halo {
+  /* Two stops: the tight one gives every glyph a hard edge to sit against, the
+     wide one thins the pattern across the whole line. */
+  text-shadow:
+    0 0 0.2em var(--background),
+    0 0 0.5em var(--background);
+}
+
+.ground-halo :where(img, svg) {
+  filter: drop-shadow(0 0 3px var(--background));
+}
+
+/* Opt out, for anything inside a halo that draws its own box — buttons, chips.
+   The halo is a fix for type sitting directly on a pattern; on a filled button
+   there is no pattern to sit on, so it shows up as a glow around the label and
+   a ring around the icon, which is exactly what it looks like: a mistake.
+
+   Both properties have to be named. text-shadow inherits, so setting it to none
+   on the control is enough for the label, but `filter` does not — the companion
+   rule above matches the icon directly and has to be answered directly. */
+.ground-halo-none {
+  text-shadow: none;
+}
+
+.ground-halo-none :where(img, svg) {
+  filter: none;
+}
+
+/* All three modes drop the decoration entirely — grounds, scrims and halos.
+
+   The scrims and halos have to go WITH the grounds, not instead of them: both
+   are corrections for a pattern that is no longer there, and both are actively
+   wrong on their own. A halo with nothing to lift the text off is a blur around
+   every glyph, and forced-colors remaps the scrim's background-color to a system
+   colour, turning an invisible wash into a visible slab behind the text.
+
+   Why each mode: forced-colors overrides background-color, so an unhandled tile
+   survives as a system-coloured stipple in the one mode whose whole point is
+   maximum contrast and minimum noise. prefers-contrast: more is the same request
+   made politely. Print is partly belt-and-braces — most engines drop background
+   graphics — but a fixed full-viewport layer can otherwise repeat on every
+   printed page. */
+@media print {
+  body::before,
+  [data-pattern]::before,
+  .ground-plate::before {
+    display: none;
+  }
+
+  .ground-halo {
+    text-shadow: none;
+  }
+
+  .ground-halo :where(img, svg) {
+    filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  body::before,
+  [data-pattern]::before,
+  .ground-plate::before {
+    display: none;
+  }
+
+  .ground-halo {
+    text-shadow: none;
+  }
+
+  .ground-halo :where(img, svg) {
+    filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  body::before,
+  [data-pattern]::before,
+  .ground-plate::before {
+    display: none;
+  }
+
+  .ground-halo {
+    text-shadow: none;
+  }
+
+  .ground-halo :where(img, svg) {
+    filter: none;
+  }
 }
 
 /* Custom scrollbar. Firefox honours the standard properties; WebKit needs its

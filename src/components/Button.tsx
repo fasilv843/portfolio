@@ -94,7 +94,11 @@ export default function Button(props: Props) {
   // list already covers colour, opacity, shadow and transform, and does not
   // animate layout. (Naming that class here would be enough for Tailwind to
   // emit a rule for it — it scans comments too. See 2.8.)
-  const base = `inline-flex items-center justify-center rounded-md transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${getStyles(color)} ${getSizing(size)} ${className ?? ""}`;
+  // ground-halo-none: a button is its own box, so it never wants the halo a
+  // patterned ground puts on the text around it. Set here rather than at each
+  // call site — the halo is inherited from whatever ancestor carries it, and a
+  // button has no way to know it is inside one.
+  const base = `ground-halo-none inline-flex items-center justify-center rounded-md transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${getStyles(color)} ${getSizing(size)} ${className ?? ""}`;
 
   if ("href" in props && props.href) {
     const { href } = props;

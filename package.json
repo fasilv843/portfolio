@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "tiles": "node scripts/pattern-tiles.mjs && prettier --write src/app/globals.css"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

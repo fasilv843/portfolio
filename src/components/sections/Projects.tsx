@@ -14,6 +14,11 @@ export default function Projects() {
       index="04"
       title="Featured Projects"
       lead="A few things I've built end to end, from schema to deploy."
+      // Branches and merges: work has lineage, and this ground carries across
+      // every project surface — here, /projects, and each detail page. The
+      // cards are opaque, so the lanes read between them rather than under the
+      // copy.
+      pattern="graph"
     >
       {/* Group rather than per-card: each child gets its own view() timeline,
           so they stagger naturally as the grid scrolls past. */}

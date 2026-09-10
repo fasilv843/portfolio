@@ -498,9 +498,56 @@ measured result; where a number is an artifact of running on localhost, it says 
 
 ---
 
+## Phase 9 — Decorative grounds ✅ done
+
+A masked-SVG background system, and the assignment pass over it. Every tile is a **mask**, not
+artwork: `mask-image` carries the shape and `background-color` carries the paint, so one tile
+serves both themes and follows `--pattern-color`. `scripts/pattern-tiles.mjs` is the source of
+truth for the three SVG tiles — edit shapes there and run `npm run tiles`, never the encoded
+data URIs.
+
+- [x] **9.1 The system.** Theme-scoped tokens (`--pattern-color`, `--pattern-opacity`,
+      `--pattern-opacity-soft`, `--ground-opacity`), a page ground on `body::before`, a section
+      ground on `[data-pattern]::before`, and a `pattern` prop on `Section`. Dark paints
+      `--border-strong`, not `--foreground`: on a near-black background a white ground at 5%
+      drags `--foreground-faint` to ~3.1:1, and the ceiling for white is ~1.2% — too faint to
+      see. `--border-strong` raises that ceiling to ~20%, so 18% is both visible and safe, and
+      lands within a couple of levels of what light's 7% does.
+- [x] **9.2 Assignment.** Blueprint is the **page** ground on `body`, so every route has it —
+      home, `/projects`, each detail page, 404, the error boundary. `graph` (branches and
+      merges) is the project ground and appears on all three project surfaces. `stack` is
+      Skills only. Experience gave up `graph` when Projects took it: two adjacent sections on
+      the same ground stop telling each other apart.
+- [x] **9.3 Contrast budget.** The budget is the **local** worst case — a text pixel sitting on
+      a stroke — not the average. Light bottoms out on `--primary` as text at 4.90:1, which
+      breaks 4.5:1 at about 7%. The blueprint dot stop is `rgba(0,0,0,0.65)` rather than opaque
+      for exactly this reason: as the page ground its dots are the worst case for every line of
+      type on the site, and 0.65 keeps that where the dot field it replaced sat.
+- [x] **9.4 Legibility.** Cards need nothing — an opaque `bg-surface` hides the ground outright.
+      For the places with no card there are two utilities: `.ground-plate`, a `--background`
+      scrim with a radial mask so it has no findable edge, and `.ground-halo`, a
+      `--background` text-shadow (plus a `drop-shadow` companion rule for logos). Skills gets
+      both per column, patterned section headers and the project pages get the halo. The plate
+      needs `isolation: isolate` — without it its negative-z pseudo joins the section's stacking
+      context and races the section ground by tree order.
+- [x] **9.5 Suppression.** Grounds, scrims **and** halos all drop under `print`,
+      `forced-colors: active` and `prefers-contrast: more`. They go together: a halo with no
+      pattern under it is a blur around every glyph, and forced colors remaps the scrim's
+      background to a system colour, turning an invisible wash into a visible slab.
+
+### Still needs you (phase 9)
+
+- A look in **both** themes via the real toggle, particularly Skills — the plates should have no
+  findable edge, and no stroke should cross a glyph.
+- A judgement call on the page ground being viewport-**fixed**: the grid holds still while the
+  content scrolls over it. That is the intent (a drafting desk), not a bug.
+
+---
+
 ### Suggested commit slicing
 
 `0 → 1 → 2` in one PR (toolchain + fixes, no visual change), `3` (theme), `4` (SEO),
 `5` then `6` (the visible rewrite — shipped as two commits, the motion one landing the
-reduced-motion guard alongside the first animation), `7` (content), `8` (verification). Keeping the SEO work in its own
+reduced-motion guard alongside the first animation), `7` (content), `8` (verification), `9` (grounds — one
+commit for the system and its assignment, since the tiles are meaningless without the sections that use them). Keeping the SEO work in its own
 commit means you can point Search Console at a specific deploy if rankings move.

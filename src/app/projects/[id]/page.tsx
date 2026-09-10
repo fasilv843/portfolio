@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/Button";
 import Footer from "@/components/Footer";
+import Ground from "@/components/ui/Ground";
 import Tag from "@/components/ui/Tag";
 import { GitHubIcon, GlobeIcon } from "@/components/ui/icons";
 import { Metadata } from "next";
@@ -59,127 +60,142 @@ export default async function ProjectPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mx-auto w-full max-w-5xl px-6 pt-24 pb-16 md:pt-32">
-        <nav aria-label="Breadcrumb">
-          <Link
-            href="/projects"
-            className="text-foreground-faint hover:text-foreground focus-visible:outline-ring font-mono text-xs tracking-[0.15em] uppercase transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-4"
-          >
-            <span aria-hidden="true">← </span>All Projects
-          </Link>
-        </nav>
+      {/* One Ground over both blocks, not one each: the lanes are tiled from
+          this box's top-left corner, so splitting it in two would restart the
+          pattern mid-page and put a visible seam between them. The footer stays
+          outside — it draws its own hairline and ends the page. */}
+      <Ground pattern="graph">
+        <div className="mx-auto w-full max-w-5xl px-6 pt-24 pb-16 md:pt-32">
+          {/* ground-halo on each of these rather than their container: the
+            container also holds the hero image, and the halo's companion rule
+            would put a drop-shadow filter on an opaque photo for nothing. */}
+          <nav aria-label="Breadcrumb" className="ground-halo">
+            <Link
+              href="/projects"
+              className="text-foreground-faint hover:text-foreground focus-visible:outline-ring font-mono text-xs tracking-[0.15em] uppercase transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-4"
+            >
+              <span aria-hidden="true">← </span>All Projects
+            </Link>
+          </nav>
 
-        <h1 className="font-display text-display text-foreground mt-8 text-balance">
-          {project.name}
-        </h1>
-        <p className="text-foreground-muted text-lead mt-4 max-w-[68ch] text-pretty">
-          {project.subheading}
-        </p>
+          <h1 className="font-display text-display text-foreground ground-halo mt-8 text-balance">
+            {project.name}
+          </h1>
+          <p className="text-foreground-muted text-lead ground-halo mt-4 max-w-[68ch] text-pretty">
+            {project.subheading}
+          </p>
 
-        {project.image && (
-          <div className="border-border relative mt-14 aspect-[16/9] w-full overflow-hidden rounded-lg border">
-            <Image
-              src={project.image}
-              alt=""
-              fill
-              priority
-              sizes="(min-width: 1024px) 64rem, 100vw"
-              className="object-cover"
-            />
-          </div>
-        )}
-      </div>
-
-      <div className="mx-auto grid w-full max-w-5xl gap-14 px-6 pb-28 lg:grid-cols-3">
-        <div className="space-y-16 lg:col-span-2">
-          <section>
-            <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
-              Project Overview
-            </h2>
-            <p className="text-foreground-muted mt-6 text-lg leading-relaxed text-pretty">
-              {project.description}
-            </p>
-          </section>
-
-          {project.features?.length > 0 && (
-            <section>
-              <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
-                Key Features
-              </h2>
-              {/* Two columns: CineSnap has 14 of these and a single column read
-                  as an endless list. Real semantic grouping needs the data to
-                  carry categories — that is phase 7, not a layout fix. */}
-              <ul className="mt-6 grid gap-x-10 sm:grid-cols-2">
-                {project.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="text-foreground-muted border-border flex gap-3 border-b py-3 text-sm text-pretty"
-                  >
-                    <span className="text-primary shrink-0" aria-hidden="true">
-                      —
-                    </span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {project.demoUrl && (
-            <section>
-              <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
-                Project Demo
-              </h2>
-              <div className="border-border mt-6 aspect-video w-full overflow-hidden rounded-lg border">
-                <iframe
-                  src={project.demoUrl}
-                  title={`${project.name} Demo`}
-                  className="h-full w-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            </section>
+          {project.image && (
+            <div className="border-border relative mt-14 aspect-[16/9] w-full overflow-hidden rounded-lg border">
+              <Image
+                src={project.image}
+                alt=""
+                fill
+                priority
+                sizes="(min-width: 1024px) 64rem, 100vw"
+                className="object-cover"
+              />
+            </div>
           )}
         </div>
 
-        {/* One sidebar, not two copies of the same buttons. Sticky so the
-            actions stay reachable through a long feature list. */}
-        <aside className="lg:sticky lg:top-24 lg:self-start">
-          <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
-            Built with
-          </h2>
-          <ul className="mt-5 flex flex-wrap gap-2">
-            {project.technologies.map((tech) => (
-              <li key={tech}>
-                <Tag>{tech}</Tag>
-              </li>
-            ))}
-          </ul>
+        <div className="mx-auto grid w-full max-w-5xl gap-14 px-6 pb-28 lg:grid-cols-3">
+          {/* Both columns are hairline-separated prose with no card to sit on, so
+            the halo goes on the column and every heading, row and chip inside
+            inherits it. */}
+          <div className="ground-halo space-y-16 lg:col-span-2">
+            <section>
+              <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
+                Project Overview
+              </h2>
+              <p className="text-foreground-muted mt-6 text-lg leading-relaxed text-pretty">
+                {project.description}
+              </p>
+            </section>
 
-          {(project.liveLink || project.sourceCode) && (
-            <div className="mt-10 flex flex-col gap-3">
-              {project.liveLink && (
-                <Button
-                  href={project.liveLink}
-                  label="View live site"
-                  icon={<GlobeIcon />}
-                  className="w-full"
-                />
-              )}
-              {project.sourceCode && (
-                <Button
-                  href={project.sourceCode}
-                  label="View source"
-                  icon={<GitHubIcon />}
-                  color="outline"
-                  className="w-full"
-                />
-              )}
-            </div>
-          )}
-        </aside>
-      </div>
+            {project.features?.length > 0 && (
+              <section>
+                <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
+                  Key Features
+                </h2>
+                {/* Two columns: CineSnap has 14 of these and a single column read
+                  as an endless list. Real semantic grouping needs the data to
+                  carry categories — that is phase 7, not a layout fix. */}
+                <ul className="mt-6 grid gap-x-10 sm:grid-cols-2">
+                  {project.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="text-foreground-muted border-border flex gap-3 border-b py-3 text-sm text-pretty"
+                    >
+                      <span
+                        className="text-primary shrink-0"
+                        aria-hidden="true"
+                      >
+                        —
+                      </span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {project.demoUrl && (
+              <section>
+                <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
+                  Project Demo
+                </h2>
+                <div className="border-border mt-6 aspect-video w-full overflow-hidden rounded-lg border">
+                  <iframe
+                    src={project.demoUrl}
+                    title={`${project.name} Demo`}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </section>
+            )}
+          </div>
+
+          {/* One sidebar, not two copies of the same buttons. Sticky so the
+            actions stay reachable through a long feature list. */}
+          <aside className="ground-halo lg:sticky lg:top-24 lg:self-start">
+            <h2 className="text-foreground-faint border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
+              Built with
+            </h2>
+            <ul className="mt-5 flex flex-wrap gap-2">
+              {project.technologies.map((tech) => (
+                <li key={tech}>
+                  <Tag>{tech}</Tag>
+                </li>
+              ))}
+            </ul>
+
+            {(project.liveLink || project.sourceCode) && (
+              <div className="mt-10 flex flex-col gap-3">
+                {project.liveLink && (
+                  <Button
+                    href={project.liveLink}
+                    label="View live site"
+                    icon={<GlobeIcon />}
+                    className="w-full"
+                  />
+                )}
+                {project.sourceCode && (
+                  <Button
+                    href={project.sourceCode}
+                    label="View source"
+                    icon={<GitHubIcon />}
+                    color="outline"
+                    className="w-full"
+                  />
+                )}
+              </div>
+            )}
+          </aside>
+        </div>
+      </Ground>
 
       <Footer />
     </main>

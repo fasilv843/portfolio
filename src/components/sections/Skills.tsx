@@ -8,13 +8,22 @@ export default function Skills() {
       index="02"
       title="Skills & Technologies"
       lead="The tools I reach for, grouped by where they sit in the stack."
+      // The ground scatters the same marks this section lists above it, so the
+      // texture is an echo of the content rather than unrelated decoration.
+      pattern="stack"
     >
       <div
         data-reveal-group
         className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4"
       >
         {skillCategories.map((category) => (
-          <div key={category.name}>
+          // ground-plate + ground-halo, per column rather than per line: this is
+          // the one section whose content is bare text on the loudest ground,
+          // with no card anywhere to hide it. The plate washes the tile back
+          // behind the whole column, and the halo — text-shadow inherits, so one
+          // class covers the heading, every skill name, and via the companion
+          // rule the logos — handles the strokes that cross a glyph outright.
+          <div key={category.name} className="ground-plate ground-halo">
             <h3 className="text-foreground border-border border-b pb-3 font-mono text-xs tracking-[0.15em] uppercase">
               {category.name}
             </h3>
