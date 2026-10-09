@@ -3,6 +3,7 @@ import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/Navbar";
+import ChatWidget from "@/components/chat/ChatWidget";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import {
@@ -183,6 +184,7 @@ export default function RootLayout({
         >
           <Navbar />
           {children}
+          <ChatWidget />
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

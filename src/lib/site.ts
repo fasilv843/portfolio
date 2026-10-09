@@ -38,3 +38,9 @@ export const SOCIALS = [
 ] as const;
 
 export const SOCIAL_LINKS: string[] = SOCIALS.map((s) => s.href);
+
+/** WhatsApp is the preferred number channel; the bare digits feed the wa.me link. */
+export const PHONE_DISPLAY = "+91 81292 52000";
+export const WHATSAPP_URL = "https://wa.me/918129252000";
+
+export const LINKEDIN_URL = SOCIALS.find((s) => s.label === "LinkedIn")!.href;
