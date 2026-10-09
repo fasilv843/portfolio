@@ -121,4 +121,22 @@ export const projects: Project[] = [
     ],
     sourceCode: "https://github.com/fasilv843/microservice-social-media",
   },
+  {
+    id: "task-management",
+    name: "Task Management",
+    subheading: "A Task Management App with Calendar View",
+    description:
+      "A task management application with rich-text descriptions, a deadline-based calendar view, and threaded comments, built with modern reactive Angular.",
+    technologies: ["Angular", "TypeScript", "MobX"],
+    features: [
+      "Developed a task management application with rich-text task descriptions, supporting structured content creation and editing.",
+      "Designed a calendar-based task view to organize and visualize tasks according to their deadlines.",
+      "Implemented task comments with infinitely nested replies to support threaded discussions and collaboration.",
+      "Adopted MobX for reactive state management, centralizing application state and synchronizing UI updates across components.",
+      "Leveraged modern Angular features including Signals and signal-based state patterns to build reactive and maintainable UI components.",
+      "Configured Angular with zoneless change detection and OnPush-compatible components to minimize unnecessary change detection and improve rendering efficiency.",
+    ],
+    liveLink: "https://ng-task-management.fasilv.in",
+    sourceCode: "https://github.com/fasilv843/task-management",
+  },
 ];
